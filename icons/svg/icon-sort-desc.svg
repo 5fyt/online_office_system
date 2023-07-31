@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="11px" height="11px" viewBox="0 0 11 11" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>排序高到低</title>
+    <g id="控件" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="排序高到低" fill-rule="nonzero">
+            <polygon id="路径" fill="#E40065" points="6 10 6 1 7.59924117 1 7.59924117 6.37769199 10 6.39506298 10 6.58431532 6.28076832 10 6.00094855 10"></polygon>
+            <polygon id="路径" fill="#BBBBBB" points="4 1 4 10 2.39867267 10 2.39867267 4.62230801 0 4.60493702 0 4.41568468 3.72031287 1"></polygon>
+        </g>
+    </g>
+</svg>
