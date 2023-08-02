@@ -76,7 +76,7 @@
 </template>
 <script setup lang="ts">
 import { reactive, ref, onMounted, nextTick } from 'vue'
-import useUserStore from '@/stores/background/user/index.ts'
+import useUserStore from '@/stores/system/user/index.ts'
 import { objTransArrayObj } from '@/utils/translate.ts'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'

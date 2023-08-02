@@ -79,7 +79,7 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
 import { objTransArrayObj } from '@/utils/translate.ts'
-import useUserStore from '@/stores/background/user/index.ts'
+import useUserStore from '@/stores/system/user/index.ts'
 import { storeToRefs } from 'pinia'
 const userStore = useUserStore()
 const dialogRef = ref<FormInstance>()

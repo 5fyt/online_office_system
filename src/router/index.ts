@@ -48,6 +48,24 @@ const routes: Array<RouteRecordRaw> = [
           title: '用户',
           isTab: true
         }
+      },
+      {
+        path: '/meeting_room',
+        name: 'MeetingRoom',
+        component: () => import('@/views/meetingorg/MeetingRoom/index.vue'),
+        meta: {
+          title: '会议室',
+          isTab: true
+        }
+      },
+      {
+        path: '/offline_meeting',
+        name: 'OfflineMeeting',
+        component: () => import('@/views/meetingorg/OfflineMeeting/index.vue'),
+        meta: {
+          title: '线下会议',
+          isTab: true
+        }
       }
     ]
   },

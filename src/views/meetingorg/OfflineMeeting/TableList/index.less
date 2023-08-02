@@ -1,0 +1,63 @@
+.blue {
+  background-color: rgb(175, 77, 214);
+}
+.gantt {
+  display: table;
+  width: 100%;
+  border: solid 1px #e0e0e0;
+  border-collapse: collapse;
+  border-spacing: none;
+  cursor: default;
+  .row {
+    display: table-row;
+    &:first-child {
+      // font-weight: bold;
+      background-color: #7be99c;
+    }
+    // &:nth-child(odd) {
+    // 	background-color: #f5f5f5;
+    // }
+    .cell {
+      display: table-cell;
+      text-align: center;
+      height: 36px;
+      border: solid 1px #e0e0e0;
+      padding: 0;
+      box-sizing: border-box;
+      position: relative;
+      vertical-align: middle;
+      width: 4.2%;
+      .meeting {
+        width: 100%;
+        z-index: 999;
+        height: 10px;
+        border-radius: 3px;
+        position: absolute;
+        left: -1px;
+        top: 13px;
+      }
+    }
+    .cell-time {
+      display: table-cell;
+      text-align: center;
+      height: 38px;
+      border: 0;
+      padding: 0;
+      box-sizing: border-box;
+      position: relative;
+      vertical-align: middle;
+      width: 4.2%;
+      .time {
+        display: block;
+        position: relative;
+        left: -33px;
+      }
+    }
+    .room {
+      width: 11.8%;
+    }
+  }
+}
+.pagination {
+  float: right;
+}
