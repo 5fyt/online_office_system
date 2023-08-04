@@ -41,9 +41,7 @@
             :min-width="item.minWidth"
           >
             <template #default="scope">
-              <el-tag type="success">{{
-                scope.row[item.prop] === 1 ? item.title.isFalse : item.title.isTrue
-              }}</el-tag>
+              <el-tag type="success">{{ scope.row.status === 1 ? '在职' : '离职' }}</el-tag>
             </template>
           </el-table-column>
         </template>
@@ -59,7 +57,7 @@
                 type="primary"
                 text
                 @click="editHandle(scope.row)"
-                :disabled="scope.row.role === '超级管理员' || auth(['root', 'staff:update'])"
+                :disabled="auth(['root', 'department:update'])"
                 >修改</el-button
               >
               <el-button type="primary" v-if="item.btnShow" text @click="dismissHandle(scope.row)"
@@ -67,7 +65,7 @@
               >
               <el-button
                 type="danger"
-                :disabled="scope.row.role === '超级管理员' || auth(['root', 'staff:delete'])"
+                :disabled="scope.row.count > 0 || auth(['root', 'department:delete'])"
                 text
                 @click="deleteHandle(scope.row.id)"
                 >删除</el-button
@@ -151,8 +149,8 @@ const queryUser = (formData) => {
 }
 //选项发生变化时触发 ,将超级管理员设置为禁止删除
 const selectable = (row) => {
-  if (row.hasOwnProperty('role')) {
-    return row.role.includes('超级管理员') ? false : true
+  if (row.hasOwnProperty('count')) {
+    return row.count > 0 ? false : true
   } else {
     return true
   }
@@ -171,7 +169,6 @@ const dismissHandle = ({ id }) => {
 
 //删除用户，批量删除和单个删除
 const deleteHandle = (id) => {
-  console.log(id)
   //拿到一条或者多条id标识
   let ids = id ? [id] : deleteId.value.map((item) => item.id)
   if (!ids.length) {

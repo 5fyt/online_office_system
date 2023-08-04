@@ -1,3 +1,6 @@
 <template>
-  <div>部门</div>
+  <UserTable></UserTable>
 </template>
+<script setup>
+import UserTable from './UserTable/index.vue'
+</script>
