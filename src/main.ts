@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import piniaPluginPersist from 'pinia-plugin-persist'
 
 import App from './App.vue'
 import router from './router'
@@ -25,7 +26,9 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 // 注册pinia
-app.use(createPinia())
+const pinia = createPinia()
+pinia.use(piniaPluginPersist)
+app.use(pinia)
 app.use(router)
 
 app.mount('#app')

@@ -80,7 +80,7 @@
             <span>线下会议</span>
           </el-menu-item>
           <el-menu-item
-            index="demo-echarts"
+            index="demo-echart"
             @click="$router.push({ name: 'OnlineMeeting' })"
           >
             <SvgIcon name="service_fill" class="icon-svg" />

@@ -132,7 +132,7 @@ const tabRemove = (name) => {
     router.push({ name: siteContent.tabActiveName })
   } else {
     siteContent.tabActiveName = ''
-    router.push({ name: 'MisHome' })
+    router.push({ name: 'Home' })
   }
 }
 //收缩侧边栏

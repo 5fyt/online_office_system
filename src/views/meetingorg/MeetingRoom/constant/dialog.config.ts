@@ -1,5 +1,5 @@
 const dialogConfig = {
-  pageName: 'meeting',
+  pageName: 'meeting-room',
   width: '450px',
   header: {
     addTitle: '新增',

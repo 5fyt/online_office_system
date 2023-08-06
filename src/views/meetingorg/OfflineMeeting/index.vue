@@ -1,8 +1,6 @@
 <template>
-  <div class="offlineMeeting">
-    <TableList></TableList>
-  </div>
+  <DateTable></DateTable>
 </template>
 <script setup lang="ts">
-import TableList from './TableList/index.vue'
+import DateTable from './DateTable/index.vue'
 </script>

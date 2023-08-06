@@ -27,7 +27,7 @@ const useLoginStore = defineStore('login', {
             type: 'success',
             duration: 1000
           })
-          router.push({ name: 'MisHome' })
+          router.push({ name: 'Home' })
         } else {
           ElMessage({
             message: '登入失败',

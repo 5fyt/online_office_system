@@ -9,15 +9,10 @@ import router from '@/router'
 // const app = createApp(App)
 //后端项目的URL根路径
 let baseUrl = 'http://localhost:9002'
-
+//mock默认虚拟路径
+// let baseUrl = 'http://127.0.0.1:4523/m1/3068540-0-default'
 //封装全局Ajax公共函数
-const request =  (
-  url: string,
-  method: string,
-  data: any,
-  async: boolean,
-  fun: Function
-)=> {
+const request = (url: string, method: string, data: any, async: boolean, fun: Function) => {
   $.ajax({
     url: baseUrl + url,
     type: method,
@@ -38,10 +33,12 @@ const request =  (
       if (resp.code == 200) {
         fun(resp)
       } else {
-        ElMessage.error({
-          message: resp.message,
-          duration: 1200
-        })
+        if (resp.message === '用户未登录，请先登录！') {
+          localStorage.removeItem('token')
+          router.push({
+            name: 'Login'
+          })
+        }
       }
     },
     error: function (e: any) {
@@ -53,6 +50,7 @@ const request =  (
         })
       } else {
         let status = e.status
+        console.log(e)
         //没有登陆体检系统
         if (status == 401) {
           if (url.startsWith('/front/')) {
@@ -61,7 +59,7 @@ const request =  (
             })
           } else {
             router.push({
-              name: 'MisLogin'
+              name: 'Login'
             })
           }
         } else {

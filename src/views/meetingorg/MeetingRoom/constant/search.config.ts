@@ -1,5 +1,5 @@
 const searchConfig = {
-  pageName: 'meeting',
+  pageName: 'meeting-room',
   searchList: [
     {
       type: 'input',

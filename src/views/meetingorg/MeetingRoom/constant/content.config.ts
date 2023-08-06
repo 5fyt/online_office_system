@@ -1,5 +1,5 @@
 const contentConfig = {
-  pageName: 'meeting',
+  pageName: 'meeting-room',
   contentList: [
     {
       type: 'selection',

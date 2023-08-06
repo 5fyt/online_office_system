@@ -123,7 +123,7 @@ const handleSwitch = () => {
 //退出登入
 const loginOut = () => {
   loginStore.loginOutAction()
-  router.push({ name: 'MisLogin' })
+  router.push({ name: 'Login' })
 }
 //打开弹出层
 const editPassword = () => {
