@@ -42,8 +42,8 @@
         />
       </div>
     </div>
-    <DialogForm ref="dialogRef"></DialogForm>
   </div>
+  <DialogForm ref="dialogRef"></DialogForm>
   <CalendarTable
     v-if="!visible"
     :queryInfo="queryCalendarInfo.queryInfo"
@@ -140,6 +140,7 @@ const handleCurrentChange = (value) => {
 }
 //申请会议
 const apply = () => {
+  console.log('ss')
   dialogRef.value?.show()
 }
 

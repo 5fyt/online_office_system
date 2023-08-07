@@ -21,7 +21,12 @@
               }"
               @click="infoHandler(meeting.id)"
             >
-              <SvgIcon name="close" class="icon-svg-close" @click.stop="deleteHandle(meeting.id)" />
+              <SvgIcon
+                name="close"
+                class="icon-svg-close"
+                @click.stop="deleteHandle(meeting.id)"
+                v-if="meeting.canDelete"
+              />
               {{ meeting.title }}
             </div>
           </template>
@@ -71,7 +76,9 @@ const loadCalendarData = () => {
       date: dayjs().format('YYYY-MM-DD')
     }
     offlineStore.getOfflineCalendar({ ...props.queryInfo, ...data })
+    calendarDays.days = transTime(calandarMeetings.value)
     meetingDetail.meetings = calandarMeetings.value
+    console.log('meetings',meetingDetail.meetings)
   }
 }
 
@@ -81,7 +88,6 @@ const apply = () => {
 }
 //点击会议弹出会议的详细信息
 const infoHandler = (value) => {
-  console.log('ss')
   meetingRef.value?.show()
   meetingRef.value?.showInfo(value)
 }

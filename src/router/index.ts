@@ -67,7 +67,15 @@ const routes: Array<RouteRecordRaw> = [
           isTab: true
         }
       },
-
+      {
+        path: 'approval',
+        name: 'Approval',
+        component: import('@/views/onlineoffice/approval/index.vue'),
+        meta: {
+          title: '在线审批',
+          isTab: true
+        }
+      }
     ]
   },
 

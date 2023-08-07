@@ -1,7 +1,7 @@
 <template>
   <div class="dialogForm">
     <el-dialog v-model="visible" title="会议申请" width="692px" :close-on-click-modal="false">
-      <el-form :model="dialogForm" :rules="rules" label-width="60px">
+      <el-form :model="dialogForm" :rules="rules" label-width="60px" ref="form">
         <el-form-item label="主题" prop="title">
           <el-input v-model="dialogForm.title" width="100%" clearable />
         </el-form-item>
@@ -99,6 +99,7 @@ import useOfflineStore from '@/stores/meetingorg/offlinemeeting/index.ts'
 const offlineStore = useOfflineStore()
 const { memberNames } = storeToRefs(offlineStore)
 const visible = ref<boolean>(false)
+const form = ref()
 const options = reactive({
   placeList: [],
   members: []
@@ -135,19 +136,22 @@ const roomName = () => {
   options.members = memberNames.value
 }
 const disabledDate = (time: Date) => {
-  return time.getTime() < Date.now()
+  let timeHour = new Date()
+  timeHour.setHours(0, 0, 0, 0)
+  return time.getTime() < timeHour.getTime()
 }
-const loadPlaceList = () => {}
-const endChangeHandler = () => {}
-const startChangeHandler = () => {}
 
 //添加会议
 const confirmBtn = () => {
   let data = {
-    date: dayjs().format('YYYY-MM-DD')
+    date: dayjs(dialogForm.date).format('YYYY-MM-DD')
   }
+  console.log('时间', data.date)
   offlineStore.addMeetings({ ...dialogForm, ...data })
   visible.value = false
+  form.value?.resetFields()
+  dialogForm.start = ''
+  dialogForm.end = ''
 }
 const show = () => {
   visible.value = true
