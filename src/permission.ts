@@ -2,9 +2,10 @@ import router from './router/index'
 //路由守卫
 router.beforeEach((to, from, next) => {
   if (to.name != 'Login') {
-    let permissions = localStorage.getItem('permissions')
+    let permission = localStorage.getItem('permission')
     let token = localStorage.getItem('token')
-    if (permissions == null || permissions == '' || token == null || token == '') {
+    if (permission == null || permission == '' || token == null || token == '') {
+      console.log(1)
       next({
         name: 'Login'
       })

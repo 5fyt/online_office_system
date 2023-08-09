@@ -6,21 +6,25 @@ import router from '@/router'
 interface LoginType {
   token: string
   permissions: any[]
+  name: string
 }
 const useLoginStore = defineStore('login', {
   state: (): LoginType => ({
     token: localStorage.getItem('token') || '',
+    name: '',
     permissions: []
   }),
   actions: {
     loginAction(data: any) {
       let that = this
       login(data, function (res: any) {
-        const { token, permissions, code } = res
+        const { token, permissions, code, name } = res
         if (code === 200) {
           that.token = token
           that.permissions = permissions
+          that.name = name
           localStorage.setItem('token', that.token)
+          localStorage.setItem('name', that.name)
           localStorage.setItem('permission', JSON.stringify(that.permissions))
           ElMessage({
             message: '登入成功',
@@ -34,7 +38,6 @@ const useLoginStore = defineStore('login', {
             type: 'error'
           })
         }
-        console.log(res)
       })
     },
     //修改密码

@@ -3,7 +3,7 @@
     <div class="site-navbar__header">
       <h1 class="site-navbar__brand">
         <a class="site-navbar__brand-lg">EMOS在线办公系统</a>
-        <a class="site-navbar__brand-mini">体检</a>
+        <a class="site-navbar__brand-mini">办公</a>
       </h1>
     </div>
     <div class="site-navbar__body" :class="{ 'navbar-container--fold': sidebar.isFold }">
@@ -22,7 +22,7 @@
             <span class="avatar-container">
               <el-avatar shape="circle" :size="25" :src="user.photo" :icon="UserFilled"></el-avatar>
             </span>
-            {{ user.name }}
+            <span class="name">{{ user.name }}</span>
           </span>
           <template #dropdown>
             <el-dropdown-menu>
@@ -59,12 +59,13 @@ import SvgIcon from '@/components/SvgIcon/index.vue'
 import { UserFilled } from '@element-plus/icons-vue'
 import type { FormInstance } from 'element-plus'
 import useLoginStore from '@/stores/login/index.ts'
-// import { isURL } from '../../utils/validate'
 import { reactive, ref, nextTick } from 'vue'
 
+import router from '@/router/index.ts'
 //加载绑定变量
 const emit = defineEmits(['closeSwitch'])
 const loginStore = useLoginStore()
+
 //左边栏常量
 const sidebar = reactive({
   //是否折叠左边栏
@@ -115,6 +116,10 @@ const rules = reactive({
     { validator: isSamePassword, trigger: 'blur' }
   ]
 })
+const load = () => {
+  user.name = localStorage.getItem('name')
+}
+load()
 //控制收放开关
 const handleSwitch = () => {
   emit('closeSwitch')
@@ -159,6 +164,10 @@ const submit = () => {
   justify-content: space-between;
 }
 .site-navbar__switch {
- padding-right:34px;
+  padding-right: 34px;
+}
+.name {
+  margin-top: 3px;
+  margin-left:8px;
 }
 </style>

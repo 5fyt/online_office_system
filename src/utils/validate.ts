@@ -30,7 +30,7 @@ export function isURL(s: string) {
  * 验证用户名
  */
 export function isUsername(s: string) {
-	return /^[a-zA-Z0-9]{5,50}$/.test(s);
+	return /^[a-zA-Z0-9]{3,50}$/.test(s);
 }
 
 /**

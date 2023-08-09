@@ -23,9 +23,7 @@ const useOfflineStore = defineStore('offline', {
     meetingNames: [],
     memberNames: [],
     calandarMeetings: [],
-
     infoDatas: null,
-
     meetings: [],
     total: 0,
     pages: 0

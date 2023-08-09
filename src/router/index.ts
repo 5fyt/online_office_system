@@ -70,7 +70,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'approval',
         name: 'Approval',
-        component: import('@/views/onlineoffice/approval/index.vue'),
+        component: () => import('@/views/onlineoffice/approval/index.vue'),
         meta: {
           title: '在线审批',
           isTab: true

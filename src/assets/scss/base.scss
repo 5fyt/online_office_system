@@ -106,7 +106,7 @@ img {
 .site-content__wrapper,
 .site-content--tabs > .el-tabs .el-tabs__header {
 	transition: inline-block 0.3s, left 0.3s, width 0.3s, margin-left 0.3s, font-size 0.3s;
-	
+
 }
 .site-navbar__brand{
 	user-select: none;
@@ -193,7 +193,7 @@ img {
 	&__avatar {
 		border-bottom: none !important;
 		* {
-			vertical-align: inherit;
+			vertical-align: middle;
 		}
 		.el-dropdown-link {
 			> img {

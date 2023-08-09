@@ -1,4 +1,6 @@
 <template>
-  <div>sss</div>
+  <TableList></TableList>
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import TableList from './TableList/index.vue'
+</script>

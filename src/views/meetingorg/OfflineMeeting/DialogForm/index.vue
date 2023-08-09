@@ -24,7 +24,6 @@
             style="width: 34.5%"
             :disabledDate="disabledDate"
             clearable="clearable"
-            @change="loadPlaceList"
           ></el-date-picker>
           <span class="note">会议日期只能是当前或者未来的日期，不能是以往的日期</span>
         </el-form-item>
@@ -38,7 +37,6 @@
               step="00:30"
               end="18:30"
               style="width: 96%"
-              @change="startChangeHandler"
               clearable
             />
           </el-row>
@@ -51,7 +49,6 @@
               start="08:30"
               step="00:30"
               end="18:30"
-              @change="endChangeHandler"
               clearable
             />
           </el-row>
@@ -133,8 +130,10 @@ const showRoom = () => {
 }
 const roomName = () => {
   offlineStore.getMemberNames()
+  console.log(memberNames)
   options.members = memberNames.value
 }
+roomName()
 const disabledDate = (time: Date) => {
   let timeHour = new Date()
   timeHour.setHours(0, 0, 0, 0)
@@ -157,6 +156,6 @@ const show = () => {
   visible.value = true
 }
 showRoom()
-roomName()
+
 defineExpose({ show })
 </script>

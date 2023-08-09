@@ -4,7 +4,7 @@
       <el-form-item>
         <el-select v-model="searchForm.name" placeholdler="选择会议室" clearable>
           <template v-for="(option, index) in options.meetingList" :key="index">
-            <el-option :label="option.name" :value="option.name"></el-option>
+            <el-option :label="option" :value="option"></el-option>
           </template>
         </el-select>
       </el-form-item>
@@ -22,7 +22,7 @@
         <el-button type="success" @click="meetingApply">会议申请</el-button>
       </el-form-item>
       <el-form-item class="type">
-        <el-radio-group v-model="searchForm.type">
+        <el-radio-group v-model="searchForm.type" @click="queryData">
           <el-radio-button label="全部会议" />
           <el-radio-button label="我的会议" />
         </el-radio-group>
@@ -51,7 +51,8 @@ const rules = reactive({})
 //获取会议室列表
 const getNames = () => {
   offlineStore.getMeetingNames()
-  options.meetingList = JSON.parse(localStorage.getItem('meetings'))
+  options.meetingList = JSON.parse(localStorage.getItem('meetingNames'))
+
 }
 getNames()
 //查询时间甘特图

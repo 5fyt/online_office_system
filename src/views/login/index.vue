@@ -7,7 +7,7 @@
       </div>
       <div class="right">
         <div class="title-container">
-          <h2>神州大健康体检系统</h2>
+          <h2>在线办公系统</h2>
           <span>V1.0</span>
         </div>
         <div v-if="!qr.qrCodeVisible">
@@ -70,12 +70,12 @@ const qr = reactive({
 const login = () => {
   if (!isUsername(loginForm.username)) {
     ElMessage({
-      title: '用户名错误',
+      message: '用户名错误',
       type: 'error'
     })
   } else if (!isPassword(loginForm.password)) {
     ElMessage({
-      title: '密码错误',
+      message: '密码错误',
       type: 'error'
     })
   } else {
@@ -83,9 +83,8 @@ const login = () => {
       username: loginForm.username,
       password: loginForm.password
     }
+
     loginStore.loginAction(data)
-
-
   }
 }
 </script>

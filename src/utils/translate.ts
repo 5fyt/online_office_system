@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
-dayjs.locale('zh-cn');
+dayjs.locale('zh-cn')
 export const objTransArrayObj = (type: string, objData: any) => {
   let arr = []
   for (let key in objData) {
@@ -21,7 +21,7 @@ export const transColors = (meetings: any) => {
   meetings.forEach((item: any) => {
     item.meeting.forEach((one: any) => {
       if (one.status === 1) {
-        color = 'blur'
+        color = 'blue'
       } else if (one.status === 2) {
         color = 'purple'
       } else if (one.status === 3) {
