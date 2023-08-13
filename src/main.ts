@@ -28,6 +28,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 // 注册pinia
 const pinia = createPinia()
 pinia.use(piniaPluginPersist)
+
 app.use(pinia)
 app.use(router)
 

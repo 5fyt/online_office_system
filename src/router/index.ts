@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
 //不能直接用这是一个类型
 import type { RouteRecordRaw } from 'vue-router'
+// import TestDemo from '@/views/meetingorg/TestDemo/index.vue'
+// import MeetingVideo from '@/views/meetingorg/MeetingVideo/index.vue'
 const history = createWebHistory()
 const routes: Array<RouteRecordRaw> = [
   {
@@ -59,6 +62,15 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
+        path: 'online_meeting',
+        name: 'OnlineMeeting',
+        component: () => import('@/views/meetingorg/OnlineMeeting/index.vue'),
+        meta: {
+          title: '线上会议',
+          isTab: true
+        }
+      },
+      {
         path: 'meeting_room',
         name: 'MeetingRoom',
         component: () => import('@/views/meetingorg/MeetingRoom/index.vue'),
@@ -73,6 +85,15 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/views/onlineoffice/approval/index.vue'),
         meta: {
           title: '在线审批',
+          isTab: true
+        }
+      },
+      {
+        path: 'meeting_video/:meetingId',
+        name: 'MeetingVideo',
+        component: () => import('@/views/meetingorg/MeetingVideo/index.vue'),
+        meta: {
+          title: '视频会议',
           isTab: true
         }
       }

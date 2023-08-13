@@ -54,17 +54,7 @@
           </el-row>
           <span class="note">注意会议时间范围</span>
         </el-form-item>
-        <el-form-item label="地点" prop="room">
-          <el-select
-            v-model="dialogForm.room"
-            placeholder="会议室"
-            style="width: 34.5%"
-            clearable="clearable"
-          >
-            <el-option v-for="one in options.placeList" :label="one" :value="one"></el-option>
-          </el-select>
-          <span class="note">列表中的会议室均为时间段内空闲的，请选择一个会议室</span>
-        </el-form-item>
+
         <el-form-item label="成员" prop="participants">
           <el-transfer
             v-model="dialogForm.participants"
@@ -89,12 +79,12 @@ import { reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import dayjs from 'dayjs'
 import useOfflineStore from '@/stores/meetingorg/offlinemeeting/index.ts'
+const emits = defineEmits(['confirm'])
 const offlineStore = useOfflineStore()
-const { memberNames, meetingNames } = storeToRefs(offlineStore)
+const { memberNames } = storeToRefs(offlineStore)
 const visible = ref<boolean>(false)
 const form = ref()
 const options = reactive({
-  placeList: [],
   members: []
 })
 const dialogForm = reactive({
@@ -103,7 +93,7 @@ const dialogForm = reactive({
   content: '',
   start: '',
   end: '',
-  room: '',
+
   participants: []
 })
 
@@ -121,15 +111,13 @@ const rules = reactive({
     { required: false, trigger: 'change', message: '必须设置参会人' }
   ]
 })
-const showRoom = () => {
-  options.placeList = meetingNames.value
-}
+
 const roomName = () => {
   offlineStore.getMemberNames()
-  console.log(memberNames)
   options.members = memberNames.value
 }
 roomName()
+
 const disabledDate = (time: Date) => {
   let timeHour = new Date()
   timeHour.setHours(0, 0, 0, 0)
@@ -140,19 +128,18 @@ const disabledDate = (time: Date) => {
 const confirmBtn = () => {
   let data = {
     date: dayjs(dialogForm.date).format('YYYY-MM-DD'),
-    type: '线下会议'
+    type: '线上会议'
   }
-  console.log('时间', data.date)
   offlineStore.addMeetings({ ...dialogForm, ...data })
   visible.value = false
   form.value?.resetFields()
   dialogForm.start = ''
   dialogForm.end = ''
+  emits('confirm')
 }
 const show = () => {
   visible.value = true
 }
-showRoom()
 
 defineExpose({ show })
 </script>

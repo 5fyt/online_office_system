@@ -104,7 +104,7 @@ const loadData = (queryData: any = {}) => {
   tableData.totalCount = total
   // let { meetings } = toRefs(offlineStore) //浅复制里面的数组meetings
   gantt.meetings = meetings.value
-  console.log(gantt.meetings)
+ 
 }
 const ganttWidth = () => {
   nextTick(() => {
@@ -140,7 +140,6 @@ const handleCurrentChange = (value) => {
 }
 //申请会议
 const apply = () => {
-  console.log('ss')
   dialogRef.value?.show()
 }
 

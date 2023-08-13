@@ -20,18 +20,31 @@
             <el-tab-pane
               :label="tab.title"
               :name="tab.name"
+
               v-for="(tab, index) in siteContent.navTabs"
-              :key="index"
+              :key="tab"
               :closable="true"
             >
-              <el-card :body-style="heightView.height"
-                ><router-view :key="router.currentRoute.value.query.random"></router-view
-              ></el-card>
+              <el-card :body-style="heightView.height">
+                <router-view :key="router.currentRoute.value.query.random" v-slot="{ Component }">
+                  <keep-alive>
+                    <component
+                      :is="Component"
+                      v-if="$route.name===tab.name"
+                    ></component>
+                  </keep-alive>
+                </router-view>
+
+              </el-card>
             </el-tab-pane>
           </el-tabs>
-          <el-card v-else :body-style="heightView.height"
-            ><router-view :key="router.currentRoute.value.query.random"></router-view
-          ></el-card>
+          <el-card v-if="!$route.meta.isTab" :body-style="heightView.height">
+            <router-view :key="router.currentRoute.value.query.random" v-slot="{ Component }">
+              <keep-alive>
+                <component :is="Component"></component>
+              </keep-alive>
+            </router-view>
+          </el-card>
         </main>
       </div>
     </div>
@@ -58,26 +71,26 @@ const siteContent = reactive({
   menuActiveName: ''
 })
 //card 组件高度适配
-const heightView=reactive({
-  viewClientHeight:0,
-  height:{}
+const heightView = reactive({
+  viewClientHeight: 0,
+  height: {}
 })
 //获取页面可视化高度
-const getClientHeight=()=>{
-  heightView.viewClientHeight=document.documentElement.clientHeight
+const getClientHeight = () => {
+  heightView.viewClientHeight = document.documentElement.clientHeight
 }
 //计算卡片内容高度
-const cardHeight=()=>{
-  let height=heightView.viewClientHeight-50-30-2
-  if(route.meta.isTab){
-    height-=40
+const cardHeight = () => {
+  let height = heightView.viewClientHeight - 50 - 30 - 2
+  if (route.meta.isTab) {
+    height -= 40
   }
-  heightView.height={minHeight:height+'px'}
+  heightView.height = { minHeight: height + 'px' }
 }
 //浏览器更改尺寸时
-window.onresize=()=>{
-   heightView.viewClientHeight=document.documentElement.clientHeight
-   cardHeight()
+window.onresize = () => {
+  heightView.viewClientHeight = document.documentElement.clientHeight
+  cardHeight()
 }
 
 /*判断对应的菜单是否要展示tab组件，如果要展示的话再判断这个tab是否被创建过，
@@ -121,8 +134,12 @@ watch(
   }
 )
 //点击tab对应的menu也要切换到对应的menu里
-const tabClick = ({ paneName }) => {
-  router.push({ name: paneName })
+const tabClick = (pane) => {
+  console.log(pane)
+  // if(pane.name==='MeetingVideo'){
+  //   router.push()
+  // }
+  router.replace({ name: pane.paneName })
 }
 //筛选出删除后的tab ,删除后将最后一个tab显示出来，然后跳转到对应的menu路由
 const tabRemove = (name) => {
@@ -138,9 +155,8 @@ const tabRemove = (name) => {
 //收缩侧边栏
 const closeSwitch = () => {
   Maside.value?.closeAside()
-  sidebar.isFold=!sidebar.isFold //bug 忘记给最上层添加样式
+  sidebar.isFold = !sidebar.isFold //bug 忘记给最上层添加样式
 }
-
 </script>
 <style>
 @import url('../assets/scss/index.scss');

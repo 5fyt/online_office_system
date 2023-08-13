@@ -86,6 +86,20 @@
             <SvgIcon name="service_fill" class="icon-svg" />
             <span>线上会议</span>
           </el-menu-item>
+          <!-- <el-menu-item
+            index="demo-echar"
+            @click="$router.push({ name: 'MeetingVideo' })"
+          >
+            <SvgIcon name="service_fill" class="icon-svg" />
+            <span>视频会议</span>
+          </el-menu-item>
+          <el-menu-item
+            index="demo-echr"
+            @click="$router.push({ name: 'TestDemo' })"
+          >
+            <SvgIcon name="service_fill" class="icon-svg" />
+            <span>测试会议</span>
+          </el-menu-item> -->
         </el-sub-menu>
         <el-sub-menu
           index="系统设置"
@@ -130,6 +144,6 @@ watch(props, ({ siteContent }) => {
 })
 defineExpose({ closeAside })
 </script>
-<style lang="scss">
+<style lang="scss" scope>
 @import url('../../assets/scss/index.scss');
 </style>
