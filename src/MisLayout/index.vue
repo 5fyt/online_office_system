@@ -7,7 +7,7 @@
       element-loading-text="拼命加载中"
     >
       <MisHeader @closeSwitch="closeSwitch"></MisHeader>
-      <MisAside :siteContent="siteContent" ref="Maside"></MisAside>
+      <MisAside ref="Maside"></MisAside>
       <div :class="['site-content', { 'site-content__wrapper': $route.meta.isTab }]">
         <main class="site-content--tabs">
           <el-tabs
@@ -20,7 +20,6 @@
             <el-tab-pane
               :label="tab.title"
               :name="tab.name"
-
               v-for="(tab, index) in siteContent.navTabs"
               :key="tab"
               :closable="true"
@@ -28,13 +27,9 @@
               <el-card :body-style="heightView.height">
                 <router-view :key="router.currentRoute.value.query.random" v-slot="{ Component }">
                   <keep-alive>
-                    <component
-                      :is="Component"
-                      v-if="$route.name===tab.name"
-                    ></component>
+                    <component :is="Component" v-if="$route.name === tab.name"></component>
                   </keep-alive>
                 </router-view>
-
               </el-card>
             </el-tab-pane>
           </el-tabs>
@@ -64,6 +59,7 @@ const sidebar = reactive({
   sidebarSkin: 'dark'
 })
 const loading = ref(false)
+const params = ref(null)
 //tab 栏切换
 const siteContent = reactive({
   navTabs: [], //tabs里面的tab元素数组
@@ -124,8 +120,11 @@ const switchTab = (route) => {
 switchTab(route)
 //路由发生变化时，触发tab切换函数
 watch(
-  () => router,
+  () => route,
   () => {
+    if (route.name === 'MeetingVideo') {
+      params.value = route.params
+    }
     switchTab(route)
   },
   {
@@ -135,11 +134,11 @@ watch(
 )
 //点击tab对应的menu也要切换到对应的menu里
 const tabClick = (pane) => {
-  console.log(pane)
-  // if(pane.name==='MeetingVideo'){
-  //   router.push()
-  // }
-  router.replace({ name: pane.paneName })
+  if (pane.paneName === 'MeetingVideo') {
+    router.push({ name: pane.paneName, params: { meetingId: params.value.meetingId } })
+  } else {
+    router.replace({ name: pane.paneName })
+  }
 }
 //筛选出删除后的tab ,删除后将最后一个tab显示出来，然后跳转到对应的menu路由
 const tabRemove = (name) => {

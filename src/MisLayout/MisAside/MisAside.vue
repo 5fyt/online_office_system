@@ -2,7 +2,7 @@
   <aside class="site-sidebar site-sidebar--dark">
     <div class="site-sidebar__inner">
       <el-menu
-        :default-active="siteContent.menuActiveName || 'Home'"
+        :default-active="menuActiveName || 'Home'"
         :collapse="sidebar.isFold"
         :collapseTransition="false"
         class="site-sidebar__menu"
@@ -22,15 +22,15 @@
             <SvgIcon name="users_fill" class="icon-svg" />
             <span>组织管理</span>
           </template>
-          <el-menu-item index="MisDept" @click="$router.push({ name: 'Dept' })">
+          <el-menu-item index="Dept" @click="$router.push({ name: 'Dept' })">
             <SvgIcon name="company_fill" class="icon-svg" />
             <span>部门管理</span>
           </el-menu-item>
-          <el-menu-item index="MisRole" @click="$router.push({ name: 'Role' })">
+          <el-menu-item index="Role" @click="$router.push({ name: 'Role' })">
             <SvgIcon name="role_fill" class="icon-svg" />
             <span>角色管理</span>
           </el-menu-item>
-          <el-menu-item index="MisUser" @click="$router.push({ name: 'User' })">
+          <el-menu-item index="User" @click="$router.push({ name: 'User' })">
             <SvgIcon name="user_fill" class="icon-svg" />
             <span>用户管理</span>
           </el-menu-item>
@@ -68,38 +68,18 @@
             <SvgIcon name="meeting_fill" class="icon-svg" />
             <span>会议管理</span>
           </template>
-          <el-menu-item index="meeting-room" @click="$router.push({ name: 'MeetingRoom' })">
+          <el-menu-item index="MeetingRoom" @click="$router.push({ name: 'MeetingRoom' })">
             <SvgIcon name="warehouse_fill" class="icon-svg" />
             <span>会议室</span>
           </el-menu-item>
-          <el-menu-item
-            index="demo-echarts"
-            @click="$router.push({ name: 'OfflineMeeting' })"
-          >
+          <el-menu-item index="OfflineMeeting" @click="$router.push({ name: 'OfflineMeeting' })">
             <SvgIcon name="trust_fill" class="icon-svg" />
             <span>线下会议</span>
           </el-menu-item>
-          <el-menu-item
-            index="demo-echart"
-            @click="$router.push({ name: 'OnlineMeeting' })"
-          >
+          <el-menu-item index="OnlineMeeting" @click="$router.push({ name: 'OnlineMeeting' })">
             <SvgIcon name="service_fill" class="icon-svg" />
             <span>线上会议</span>
           </el-menu-item>
-          <!-- <el-menu-item
-            index="demo-echar"
-            @click="$router.push({ name: 'MeetingVideo' })"
-          >
-            <SvgIcon name="service_fill" class="icon-svg" />
-            <span>视频会议</span>
-          </el-menu-item>
-          <el-menu-item
-            index="demo-echr"
-            @click="$router.push({ name: 'TestDemo' })"
-          >
-            <SvgIcon name="service_fill" class="icon-svg" />
-            <span>测试会议</span>
-          </el-menu-item> -->
         </el-sub-menu>
         <el-sub-menu
           index="系统设置"
@@ -109,10 +89,7 @@
             <SvgIcon name="system_fill" class="icon-svg" />
             <span>系统设置</span>
           </template>
-          <el-menu-item
-            index="amect-type"
-            @click="$router.push({ name: 'AmectType' })"
-          >
+          <el-menu-item index="amect-type" @click="$router.push({ name: 'AmectType' })">
             <SvgIcon name="tool_fill" class="icon-svg" />
             <span>罚款类型</span>
           </el-menu-item>
@@ -122,14 +99,11 @@
   </aside>
 </template>
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
-const props = defineProps({
-  siteContent: {
-    type: Object,
-    required: true
-  }
-})
+import { reactive, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
+const menuActiveName = ref('')
+const route = useRoute()
 const sidebar = reactive({
   //是否折叠左边栏
   isFold: false,
@@ -139,9 +113,13 @@ const sidebar = reactive({
 const closeAside = () => {
   sidebar.isFold = !sidebar.isFold
 }
-watch(props, ({ siteContent }) => {
-  props.siteContent.menuActiveName = siteContent.menuActiveName
-})
+watch(
+  () => route.name,
+  (oldValue, newValue) => {
+    menuActiveName.value = oldValue
+  }
+)
+
 defineExpose({ closeAside })
 </script>
 <style lang="scss" scope>
