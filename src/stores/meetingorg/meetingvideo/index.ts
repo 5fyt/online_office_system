@@ -6,6 +6,7 @@ import {
   addVideoUser,
   autoCheckin
 } from '@/api/meetingorg/meetingvideo/index'
+import { ElMessage } from 'element-plus'
 const useVideoStore = defineStore('video', {
   state: () => ({
     sdkAppId: '',
@@ -13,13 +14,12 @@ const useVideoStore = defineStore('video', {
     userSig: '',
     rid: '',
     users: [],
-    newUsers: []
+    newUsers: null
   }),
   actions: {
     getVideoInfo() {
       let that = this
       videoInfo(function (res: any) {
-        console.log('zhi')
         let { sdkAppId, userId, userSig } = res
         that.sdkAppId = sdkAppId
         that.userId = userId
@@ -38,13 +38,18 @@ const useVideoStore = defineStore('video', {
         that.rid = res.id
       })
     },
-    checkIn(id: number) {
-      autoCheckin(id, function () {})
+    async checkIn(id: number) {
+      await autoCheckin(id, function () {
+        ElMessage({
+          message: '签到成功',
+          type: 'success'
+        })
+      })
     },
-    getNewEnterUserInfo(id: number) {
+    async getNewEnterUserInfo(id: number) {
       let that = this
       addVideoUser(id, function (res: any) {
-        let { code, message, ...other } = res
+        const { code, message, ...other } = res
         that.newUsers = other
       })
     }

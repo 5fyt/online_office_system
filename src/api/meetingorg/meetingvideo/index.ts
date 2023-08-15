@@ -13,7 +13,7 @@ export const onlineRoom = (id: number, callback: Function) => {
 }
 //已经进入视频会议的人员
 export const addVideoUser = (id: number, callback: Function) => {
-  return request(`/meeting//online/department-info/${id}`, 'GET', null, true, callback)
+  return request(`/meeting/online/department-info/${id}`, 'GET', null, false, callback)
 }
 //自动签到功能
 export const autoCheckin = (id: number, callback: Function) => {
