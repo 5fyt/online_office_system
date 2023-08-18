@@ -7,24 +7,28 @@ interface LoginType {
   token: string
   permissions: any[]
   name: string
+  photo:string
 }
 const useLoginStore = defineStore('login', {
   state: (): LoginType => ({
     token: localStorage.getItem('token') || '',
     name: '',
+    photo:'',
     permissions: []
   }),
   actions: {
     loginAction(data: any) {
       let that = this
       login(data, function (res: any) {
-        const { token, permissions, code, name } = res
+        const { token, permissions, code, name, photo } = res
         if (code === 200) {
           that.token = token
           that.permissions = permissions
           that.name = name
+          that.photo = photo
           localStorage.setItem('token', that.token)
           localStorage.setItem('name', that.name)
+          localStorage.setItem('photo', that.photo)
           localStorage.setItem('permission', JSON.stringify(that.permissions))
           ElMessage({
             message: '登入成功',

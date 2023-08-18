@@ -10,7 +10,7 @@ import router from '@/router'
 //后端项目的URL根路径
 let baseUrl = 'http://localhost:9002'
 //mock默认虚拟路径
-// let baseUrl = 'http://127.0.0.1:4523/m1/3068540-0-default'
+// let baseUrl = 'http://3565ffc5.r17.cpolar.top'
 //封装全局Ajax公共函数
 const request = (url: string, method: string, data: any, async: boolean, fun: Function) => {
   $.ajax({

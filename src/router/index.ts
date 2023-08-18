@@ -96,6 +96,15 @@ const routes: Array<RouteRecordRaw> = [
           title: '视频会议',
           isTab: true
         }
+      },
+      {
+        path: '/amect',
+        name: 'Amect',
+        component: () => import('@/views/onlineoffice/PenaltyFine/index.vue'),
+        meta: {
+          title: '违纪罚款',
+          isTab: true
+        }
       }
     ]
   },

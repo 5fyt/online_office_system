@@ -17,20 +17,23 @@
             <SvgIcon name="duanxin" class="icon-svg duanxin-svg" />
           </el-badge>
         </div>
-        <el-dropdown>
-          <span class="el-dropdown-link">
-            <span class="avatar-container">
-              <el-avatar shape="circle" :size="25" :src="user.photo" :icon="UserFilled"></el-avatar>
+        <div class="info">
+          <div class="avatar-container">
+            <el-avatar shape="circle" :size="25" :src="user.photo" :icon="UserFilled"></el-avatar>
+          </div>
+          <el-dropdown>
+            <span class="el-dropdown-link">
+              <span class="name">{{ user.name }}</span>
             </span>
-            <span class="name">{{ user.name }}</span>
-          </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item @click="editPassword()">修改密码</el-dropdown-item>
-              <el-dropdown-item @click="loginOut">退出</el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="editPassword">修改密码</el-dropdown-item>
+                <el-dropdown-item @click="updateAvatar">更换头像</el-dropdown-item>
+                <el-dropdown-item @click="loginOut">退出</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
       </div>
     </div>
   </nav>
@@ -53,13 +56,34 @@
       </span>
     </template>
   </el-dialog>
+  <el-dialog title="上传图片" align-center v-model="user.updateAvatarVisible" width="25%">
+    <el-upload
+      class="avatar-uploader"
+      :action="uploadAvatar.action"
+      :headers="uploadAvatar.headers"
+      :data="data"
+      :show-file-list="false"
+      :on-success="handleAvatarSuccess"
+      :before-upload="beforeAvatarUpload"
+    >
+      <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+      <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+    </el-upload>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="user.updatePasswordVisible = false">取消</el-button>
+        <el-button type="primary" @click="Submit">上传</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 <script lang="ts" setup>
 import SvgIcon from '@/components/SvgIcon/index.vue'
-import { UserFilled } from '@element-plus/icons-vue'
-import type { FormInstance } from 'element-plus'
+import { UserFilled, Plus } from '@element-plus/icons-vue'
+import type { FormInstance, UploadProps } from 'element-plus'
 import useLoginStore from '@/stores/login/index.ts'
 import { reactive, ref, nextTick } from 'vue'
+import { ElMessage } from 'element-plus'
 
 import router from '@/router/index.ts'
 //加载绑定变量
@@ -77,7 +101,13 @@ interface loginoutType {
   newPassword: string
   comfirmPassword: string
 }
-
+const uploadAvatar = reactive({
+  action: 'http://localhost:9002/user/upload-photo',
+  headers: {
+    token: localStorage.getItem('token')
+  }
+})
+const data = ref({})
 //退出登入表单信息
 const loginOutForm = reactive<loginOut>({
   oldPassword: '',
@@ -87,10 +117,11 @@ const loginOutForm = reactive<loginOut>({
 //用户信息常量
 const user = reactive({
   name: '',
-  photo: '',
+  photo: localStorage.getItem('photo') || '',
   //是否显示修改登陆密码的弹窗
   updatePasswordVisible: false
 })
+const imageUrl = ref('')
 const loginOutRef = ref<FormInstance>()
 //两次密码是否输入一致
 const isSamePassword = (rule: any, value: any, callback: any) => {
@@ -116,8 +147,10 @@ const rules = reactive({
     { validator: isSamePassword, trigger: 'blur' }
   ]
 })
+
 const load = () => {
   user.name = localStorage.getItem('name')
+  user.photo = localStorage.getItem('photo')
 }
 load()
 //控制收放开关
@@ -154,6 +187,35 @@ const submit = () => {
     }
   })
 }
+const updateAvatar = () => {
+  user.updateAvatarVisible = true
+}
+const handleAvatarSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
+  imageUrl.value = URL.createObjectURL(uploadFile.raw!)
+
+  localStorage.setItem('photo', response.url)
+}
+
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+  // const formData = new FormData()
+  // formData.append('file', rawFile)
+  // data.value = formData
+  data.value['file'] = rawFile
+  console.log('1')
+  if (rawFile.type == 'image/gif' || rawFile.type == 'image/webp') {
+    ElMessage.error('不支持该图片文件格式')
+    return false
+  } else if (rawFile.size / 1024 / 1024 > 2) {
+    ElMessage.error('图片文件不能超过2M')
+    return false
+  }
+  return true
+}
+const Submit = () => {
+  ElMessage.success('图片上传成功')
+  user.photo = localStorage.getItem('photo')
+  user.updateAvatarVisible = false
+}
 </script>
 
 <style lang="scss">
@@ -166,8 +228,39 @@ const submit = () => {
 .site-navbar__switch {
   padding-right: 34px;
 }
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .name {
   margin-top: 3px;
-  margin-left:8px;
+  margin-left: 8px;
+  text-align: center;
+}
+.avatar-uploader .el-upload {
+  margin-left: 100px;
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 150px;
+  height: 150px;
 }
 </style>

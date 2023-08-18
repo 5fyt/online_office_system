@@ -116,7 +116,7 @@ const loadList = () => {
   let meetings = users.value
   if (meetings.length > 0) {
     mine.value = meetings.filter((item) => item.isSelf)
-    videoList.users = meetings.filter((item, index) => index !== 0)
+    videoList.users = meetings.filter((item, index) => !item.isSelf)
   }
   videoStore.getRoomId(id)
   if (!rid.value) {
@@ -202,26 +202,28 @@ const phoneHandle = () => {
         client.value.on('stream-added', (event) => {
           const remoteStream = event.stream
           console.log('远端流增加: ')
-          //订阅远端流
+          // //订阅远端流
           client.value.subscribe(remoteStream)
-          let userId = remoteStream.getId()
+          let userID = remoteStream.getId()
 
           //将每个远端流的远端流对象保存起来
           stream.value[userId] = remoteStream
 
           //将进入的远端用户页渲染到页面中
           let userid = videoList.userId //用户进入会议id标识
+
           videoStore.addVideoUser(userid)
           let newInfo = newUsers.value
-          videoList.userList.push({ userId, ...newInfo })
+          videoList.userList.push({ userID, ...newInfo })
         })
         //释放远端流
         client.value.on('stream-subscribed', (event) => {
           const remoteStream = event.stream
           console.log('远端流订阅成功：')
-          let userId = remoteStream.getId()
-          $('#' + userId).css({ 'z-index': 1 }) //这个id要和查询在线人数会议那个id是同一个
-          remoteStream.play(userId + '')
+          let userID = remoteStream.getId()
+          console.log(userID)
+          $('#' + userID).css({ 'z-index': 1 }) //这个id要和查询在线人数会议那个id是同一个
+          remoteStream.play(userID + '')
         })
         //删除远端流，当用户离开视频会议时，自动删除远端流
         client.value.on('stream-removed', (event) => {
@@ -231,13 +233,13 @@ const phoneHandle = () => {
           let userId = remoteStream.getId()
 
           //当刚进入的用户离开时，自动剔除新进入列表
-          videoList.userList = videoList.userList.filter((item) => item.userId !== userId)
+          videoList.userList = videoList.userList.filter((item) => item.userId !== userID)
 
           //停止播放远端流，并关闭远端流
           remoteStream.stop()
           remoteStream.close()
-          $('#' + userId).css({ 'z-index': -1 })
-          $('#' + userId).html('')
+          $('#' + userID).css({ 'z-index': -1 })
+          $('#' + userID).html('')
         })
         //订阅语音事件（无论本地还是远端说话，都会触发这个事件）
         client.value.on('audio-volume', (event) => {
@@ -269,7 +271,7 @@ const phoneHandle = () => {
               localStream.value = null
               shareStream.value = null
               videoList.userList = []
-              stream.value=null //清除远端流保存对象
+              stream.value = null //清除远端流保存对象
               videoStatus.value = false
               micStatus.value = false
               $('#local_stream').css({ 'z-index': -1 })

@@ -5,6 +5,7 @@
         :default-active="menuActiveName || 'Home'"
         :collapse="sidebar.isFold"
         :collapseTransition="false"
+        @select="selectHandle"
         class="site-sidebar__menu"
         background-color="#263238"
         active-text-color="#fff"
@@ -119,7 +120,9 @@ watch(
     menuActiveName.value = oldValue
   }
 )
-
+const selectHandle=(value,v)=>{
+  console.log(value,v)
+}
 defineExpose({ closeAside })
 </script>
 <style lang="scss" scope>
