@@ -98,11 +98,20 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: '/amect',
+        path: 'amect',
         name: 'Amect',
         component: () => import('@/views/onlineoffice/PenaltyFine/index.vue'),
         meta: {
           title: '违纪罚款',
+          isTab: true
+        }
+      },
+      {
+        path: 'report',
+        name: 'AmectReport',
+        component: () => import('@/views/onlineoffice/PayCharts/index.vue'),
+        meta: {
+          title: '违纪报告',
           isTab: true
         }
       }

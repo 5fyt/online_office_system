@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    DialogComp: typeof import('./src/components/onlineoffice/DialogComp/index.vue')['default']
     DialogForm: typeof import('./src/components/baseUI/DialogForm/index.vue')['default']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElBadge: typeof import('element-plus/es')['ElBadge']
@@ -44,8 +45,10 @@ declare module 'vue' {
     ElUpload: typeof import('element-plus/es')['ElUpload']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchComp: typeof import('./src/components/onlineoffice/SearchComp/index.vue')['default']
     SearchForm: typeof import('./src/components/baseUI/SearchForm/index.vue')['default']
     SvgIcon: typeof import('./src/components/SvgIcon/index.vue')['default']
+    TableComp: typeof import('./src/components/onlineoffice/TableComp/index.vue')['default']
     TableList: typeof import('./src/components/onlineoffice/TableList/index.vue')['default']
   }
   export interface ComponentCustomProperties {
