@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import SearchComp from '@/components/onlineoffice/SearchComp/index.vue'
 import searchConfig from './constants/seachConfig.ts'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import $ from 'jquery'
 import * as echarts from 'echarts'
 const data = ref([])
@@ -150,15 +150,19 @@ const loadChartFour = () => {
       }
     ]
   }
-   let chart = echarts.init(document.getElementById('chart-4'))
+  let chart = echarts.init(document.getElementById('chart-4'))
   chart.setOption(option_4)
 }
 const loadList = () => {
   loadChartOne()
   loadChartFour()
 }
+
 onMounted(() => {
-  loadList()
+  //bug ,要将dom挂载后在初始化表格，否则会出现ECharts] Can't get DOM width or height. Please check dom.clientWidth and dom.clientHeight. 
+  setTimeout(() => {
+    loadList()
+  }, 800)
 })
 
 const searchInfo = () => {

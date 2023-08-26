@@ -107,6 +107,15 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
+        path: 'leave',
+        name: 'Leave',
+        component: () => import('@/views/onlineoffice/leave/index.vue'),
+        meta: {
+          title: '员工请假',
+          isTab: true
+        }
+      },
+      {
         path: 'report',
         name: 'AmectReport',
         component: () => import('@/views/onlineoffice/PayCharts/index.vue'),
@@ -114,7 +123,25 @@ const routes: Array<RouteRecordRaw> = [
           title: '违纪报告',
           isTab: true
         }
-      }
+      },
+      {
+        path: 'amect_type',
+        name: 'AmectType',
+        component: () => import('@/views/systemsetting/PenaltyType/index.vue'),
+        meta: {
+          title: '罚款类型',
+          isTab: true
+        }
+      },
+      {
+				path: 'reim',
+				name: 'Reim',
+        component: () => import('@/views/onlineoffice/reim/index.vue'),
+				meta: {
+					title: '报销管理',
+					isTab: true
+				}
+			}
     ]
   },
 

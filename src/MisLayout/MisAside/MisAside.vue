@@ -44,19 +44,19 @@
             <SvgIcon name="meeting_fill" class="icon-svg" />
             <span>在线办公</span>
           </template>
-          <el-menu-item index="approval" @click="$router.push({ name: 'Approval' })">
+          <el-menu-item index="Approval" @click="$router.push({ name: 'Approval' })">
             <SvgIcon name="warehouse_fill" class="icon-svg" />
             <span>审批任务</span>
           </el-menu-item>
-          <el-menu-item index="leave" @click="$router.push({ name: 'Leave' })">
+          <el-menu-item index="Leave" @click="$router.push({ name: 'Leave' })">
             <SvgIcon name="night_fill" class="icon-svg" />
             <span>员工请假</span>
           </el-menu-item>
-          <el-menu-item index="amect" @click="$router.push({ name: 'Amect' })">
+          <el-menu-item index="Amect" @click="$router.push({ name: 'Amect' })">
             <SvgIcon name="cry_fill" class="icon-svg" />
             <span>违纪罚款</span>
           </el-menu-item>
-          <el-menu-item index="reim" @click="$router.push({ name: 'Reim' })">
+          <el-menu-item index="Reim" @click="$router.push({ name: 'Reim' })">
             <SvgIcon name="assurance_fill" class="icon-svg" />
             <span>报销管理</span>
           </el-menu-item>
@@ -90,7 +90,7 @@
             <SvgIcon name="system_fill" class="icon-svg" />
             <span>系统设置</span>
           </template>
-          <el-menu-item index="amect-type" @click="$router.push({ name: 'AmectType' })">
+          <el-menu-item index="AmectType" @click="$router.push({ name: 'AmectType' })">
             <SvgIcon name="tool_fill" class="icon-svg" />
             <span>罚款类型</span>
           </el-menu-item>

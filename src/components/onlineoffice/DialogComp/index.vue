@@ -24,7 +24,7 @@
               :placeholder="item.placeholder"
               clearable
             />
-            <span class="desc">{{ item.desc }}</span>
+            <span class="des">{{ item.desc }}</span>
           </template>
           <template v-if="item.type === 'select'">
             <el-select
@@ -163,3 +163,14 @@ const submit = () => {
 
 defineExpose({ show, submit })
 </script>
+<style scope>
+.el-form-item {
+  align-items: center;
+}
+.el-form-item__content {
+  flex-wrap: nowrap !important;
+}
+.des {
+  padding-left: 15px;
+}
+</style>

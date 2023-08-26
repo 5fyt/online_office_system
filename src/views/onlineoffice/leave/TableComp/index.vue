@@ -6,12 +6,10 @@
       style="width: 100%"
       border
       @selection-change="handleSelectionChange"
-      @expand-change="expandChange"
-
     >
       <template v-for="(item, index) in contentConfig.contentList" :key="index">
         <template v-if="item.type === 'selection'">
-
+          <!-- :selectable="selectable"  -->
           <el-table-column type="selection" width="50" />
         </template>
         <template v-if="item.type === 'index'">
@@ -41,19 +39,6 @@
             </template>
           </el-table-column>
         </template>
-        <template v-if="item.type === 'expandCustom'">
-          <el-table-column
-            :width="item.width"
-
-            header-align="center"
-            align="center"
-            type="expand"
-          >
-            <template #default="scope">
-              <slot :name="item.slotName" v-bind="scope" ></slot>
-            </template>
-          </el-table-column>
-        </template>
         <template v-if="item.type === 'custom'">
           <el-table-column
             :prop="item.prop"
@@ -67,6 +52,18 @@
             </template>
           </el-table-column>
         </template>
+        <template v-if="item.btn">
+          <el-table-column
+            :label="item.label"
+            header-align="center"
+            align="center"
+            :min-width="item.minWidth"
+          >
+            <template #default="scope">
+              <el-button type="success" text @click="pdfHandle(scope.row.id)">请假单</el-button>
+            </template>
+          </el-table-column>
+        </template>
         <template v-if="item.type === 'handler'">
           <el-table-column
             :label="item.label"
@@ -75,20 +72,11 @@
             :min-width="item.minWidth"
           >
             <template #default="scope">
-              <el-button type="primary" text @click="editHandle(scope.row)" v-if="!item.buttonShow"
-                >修改</el-button
-              >
-              <el-button type="primary" v-if="item.btnShow" text @click="dismissHandle(scope.row)"
-                >交款</el-button
-              >
-              <el-button type="primary" v-if="item.buttonShow" text @click="pdfHandle(scope.row.id)"
-                >报销单</el-button
-              >
               <el-button
                 type="danger"
                 text
                 @click="deleteHandle(scope.row.id)"
-                :disabled="scope.row.canDelete === false || scope.row.status === '已通过'"
+                :disabled="scope.row.status !== '已同意'"
                 >删除</el-button
               >
             </template>
@@ -117,12 +105,13 @@
       />
     </div>
   </div>
+  <LeaveForm ref="leaveRef"></LeaveForm>
 </template>
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
-
+import LeaveForm from '../LeaveForm/index.vue'
 import usePenaltyStore from '@/stores/onlineoffice/penaltyfine/index.ts'
 interface IProps {
   contentConfig: {
@@ -137,7 +126,7 @@ interface tableType {
   totalCount: number
 }
 const props = defineProps<IProps>()
-const emits = defineEmits(['edit', 'show','expand'])
+const emits = defineEmits(['edit'])
 const penaltyStore = usePenaltyStore()
 const { total, tableList } = storeToRefs(penaltyStore)
 //用户表格里的数据
@@ -148,6 +137,7 @@ const tableData = reactive<tableType>({
   totalCount: 0
 })
 const deleteId = ref<number[]>([])
+const leaveRef = ref()
 const loadList = (searchForm) => {
   let data = {
     page: tableData.pageIndex,
@@ -167,13 +157,9 @@ const editHandle = (row) => {
 const handleSelectionChange = (value) => {
   deleteId.value = value
 }
-const expandChange=(row)=>{
-  emits('expand',row)
-}
-//交款，以后再写
-const dismissHandle = () => {}
+
 const pdfHandle = (id) => {
-  emits('show', id)
+  leaveRef.value.show(id)
 }
 const deleteHandle = (id) => {
   //拿到一条或者多条id标识

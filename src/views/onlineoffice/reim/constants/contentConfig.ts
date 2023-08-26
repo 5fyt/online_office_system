@@ -1,5 +1,5 @@
 const contentConfig = {
-  pageName: 'penalty',
+  pageName: 'reimburse',
   contentList: [
     {
       type: 'selection',
@@ -7,22 +7,15 @@ const contentConfig = {
       label: ''
     },
     {
-      type: 'expand',
-      prop: 'reason',
-      desc: '罚款原因: ',
-      width: '40'
-    },
-    {
       type: 'index',
       label: '序号',
       width: '100'
     },
-
     {
-      type: 'normal',
-      prop: 'name',
-      label: '当事人',
-      minWidth: '110'
+      type: 'expandCustom',
+     
+      slotName: 'reim',
+      width: '40'
     },
     {
       type: 'normal',
@@ -31,15 +24,36 @@ const contentConfig = {
     },
     {
       type: 'normal',
+      prop: 'name',
+      label: '申请人',
+      minWidth: '110'
+    },
+
+    {
+      type: 'normal',
       prop: 'department',
       label: '所属部门'
     },
     {
       type: 'custom',
-      prop: 'money',
-      label: '罚款金额',
+      prop: 'total',
+      label: '报销金额',
       minWidth: '110',
-      slotName: 'money'
+      slotName: 'total'
+    },
+    {
+      type: 'custom',
+      prop: 'debit',
+      label: '借款金额',
+      minWidth: '110',
+      slotName: 'debit'
+    },
+    {
+      type: 'custom',
+      prop: 'balance',
+      label: '实际金额',
+      minWidth: '110',
+      slotName: 'balance'
     },
     {
       type: 'normal',
@@ -49,14 +63,14 @@ const contentConfig = {
     },
     {
       type: 'normal',
-      prop: 'createTime',
-      label: '日期时间',
+      prop: 'date',
+      label: '申请日期',
       minWidth: '140'
     },
     {
       type: 'handler',
       label: '操作',
-      btnShow: true,
+      buttonShow: true,
       minWidth: '150'
     }
   ]

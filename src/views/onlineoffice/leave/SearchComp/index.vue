@@ -54,49 +54,8 @@
         </el-form-item>
       </template>
       <el-form-item>
-        <el-button
-          type="primary"
-          @click="searchHandle()"
-          v-if="
-            searchConfig.pageName === 'penalty' ||
-            searchConfig.pageName === 'type' ||
-            searchConfig.pageName === 'reimburse'
-          "
-          >查询</el-button
-        >
-        <el-button
-          type="primary"
-          @click="addHandle()"
-          v-if="
-            searchConfig.pageName === 'penalty' ||
-            searchConfig.pageName === 'type' ||
-            searchConfig.pageName === 'reimburse'
-          "
-        >
-          新增
-        </el-button>
-
-        <el-button
-          type="danger"
-          @click="deleteHandle()"
-          v-if="searchConfig.pageName === 'penalty' || searchConfig.pageName === 'type'"
-        >
-          批量删除
-        </el-button>
-        <el-button
-          type="warning"
-          @click="reportHandle()"
-          v-if="searchConfig.pageName === 'penalty'"
-        >
-          查看报告
-        </el-button>
-        <el-button
-          type="warning"
-          @click="searchHandle()"
-          v-if="searchConfig.pageName === 'paychart'"
-        >
-          生成报表
-        </el-button>
+        <el-button type="primary" @click="searchHandle()">查询</el-button>
+        <el-button type="danger" @click="addHandle()"> 我要请假 </el-button>
       </el-form-item>
     </el-form>
   </div>
