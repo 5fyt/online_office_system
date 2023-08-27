@@ -2,6 +2,9 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import html2Canvas from 'html2canvas'
 import jsPDF from 'jspdf'
+import useApprovalStore from '@/stores/onlineoffice/approval/index'
+const approvalStore = useApprovalStore()
+
 dayjs.locale('zh-cn')
 export const objTransArrayObj = (type: string, objData: any) => {
   let arr = []
@@ -85,6 +88,11 @@ export const transPdf = (title: string) => {
     //根据内容宽度和高度计算图片的高度，保持宽高比例不变。
     let imgHeight = (592.28 / contentWidth) * contentHeight
     let pageData = canvas.toDataURL('image/jpeg', 1.0)
+    if (title === '请假单') {
+      approvalStore.getLeaveForm(pageData)
+    } else {
+      approvalStore.getReimForm(pageData)
+    }
     let PDF = new jsPDF(undefined, 'pt', 'a4')
     if (leftHeight < pageHeight) {
       PDF.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight)

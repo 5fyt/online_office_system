@@ -24,6 +24,7 @@
     "mockjs": "^1.1.0",
     "pinia": "^2.1.3",
     "pinia-plugin-persist": "^1.0.0",
+    "qrcode": "^1.5.3",
     "sass": "^1.63.6",
     "trtc-js-sdk": "^4.15.13",
     "vue": "^3.3.4",

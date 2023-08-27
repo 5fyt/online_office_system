@@ -19,22 +19,25 @@ const searchConfig = {
         { label: '女', value: '女' }
       ]
     },
-    // {
-    //   type: 'selected',
-    //   prop: 'roles',
-    //   placeholder: '角色',
-    //   maxlength: '10',
-    //   class: 'input'
-    // },
-    // {
-    //   type: 'selected',
-    //   prop: 'dept',
-    //   placeholder: '部门',
-    //   maxlength: '10',
-    //   class: 'input'
-    // },
     {
       type: 'selected',
+      customOption:false,
+      prop: 'roleId',
+      placeholder: '角色',
+      maxlength: '10',
+      class: 'input'
+    },
+    {
+      type: 'selected',
+      prop: 'departmentId',
+      customOption:false,
+      placeholder: '部门',
+      maxlength: '10',
+      class: 'input'
+    },
+    {
+      type: 'selected',
+      customOption:true,
       prop: 'stauts',
       placeholder: '状态',
       maxlength: '10',

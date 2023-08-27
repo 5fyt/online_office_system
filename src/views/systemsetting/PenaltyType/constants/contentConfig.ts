@@ -1,5 +1,5 @@
 const contentConfig = {
-  pageName: 'type',
+  pageName: 'penalty/type',
   contentList: [
     {
       type: 'selection',

@@ -13,7 +13,7 @@
       <template #default="scope">
         <div class="content-container">
           <table class="content-table">
-            <tbody>
+            <tbody v-if="scope.row.type == '会议申请'">
               <tr>
                 <th><span>主题</span></th>
                 <td>{{ content.title }}</td>
@@ -50,26 +50,26 @@
                 </td>
               </tr>
             </tbody>
-            <!-- <tbody v-if="scope.row.type == '员工请假'">
+            <tbody v-if="scope.row.type == '员工请假'">
               <tr>
                 <th><span>请假原因</span></th>
-                <td :title="content.reason">{{ content.reason }}</td>
+                <td :title="leave.reason">{{ leave.reason }}</td>
               </tr>
               <tr>
                 <th><span>请假类型</span></th>
-                <td>{{ content.type == 1 ? '病假' : '事假' }}</td>
+                <td>{{ leave.type == 1 ? '病假' : '事假' }}</td>
               </tr>
               <tr>
                 <th><span>申请人</span></th>
-                <td>{{ content.name }}</td>
+                <td>{{ leave.name }}</td>
               </tr>
               <tr>
                 <th><span>起始时间</span></th>
-                <td>{{ content.start }}</td>
+                <td>{{ leave.start }}</td>
               </tr>
               <tr>
                 <th><span>截止时间</span></th>
-                <td>{{ content.end }}</td>
+                <td>{{ leave.end }}</td>
               </tr>
               <tr>
                 <th><span>审批结果</span></th>
@@ -87,23 +87,23 @@
             <tbody v-if="scope.row.type == '报销申请'">
               <tr>
                 <th><span>申请人</span></th>
-                <td>{{ content.name }}</td>
+                <td>{{ reim.name }}</td>
               </tr>
               <tr>
                 <th><span>报销金额</span></th>
-                <td>{{ content.amount }}元</td>
+                <td>{{ reim.total }}元</td>
               </tr>
               <tr>
                 <th><span>借款金额</span></th>
-                <td>{{ content.anleihen }}元</td>
+                <td>{{ reim.debit }}元</td>
               </tr>
               <tr>
                 <th><span>实际金额</span></th>
-                <td>{{ content.balance }}元</td>
+                <td>{{ reim.balance }}元</td>
               </tr>
               <tr>
                 <th><span>报销类型</span></th>
-                <td>{{ content.type }}</td>
+                <td>{{ reim.type }}</td>
               </tr>
               <tr>
                 <th><span>审批结果</span></th>
@@ -117,9 +117,14 @@
                   >
                 </td>
               </tr>
-            </tbody> -->
+            </tbody>
           </table>
-
+          <template v-if="scope.row.type === '员工请假'">
+            <img :src="leaveForm" alt="Image"  style="width: 480px; height: 300px" />
+          </template>
+          <template v-if="scope.row.type === '报销申请'">
+            <img :src="ReimForm" alt="Image"  style="width: 480px; height: 300px" />
+          </template>
           <img
             style="width: 480px; height: 300px"
             src="../../../../assets/trtc/uTools_1691583602082.png"
@@ -143,7 +148,7 @@
       min-width="100"
     />
     <el-table-column
-      prop="initiator"
+      prop="name"
       header-align="center"
       align="center"
       label="申请人"
@@ -175,15 +180,18 @@
         </el-button>
         <el-button
           text
-          v-if="scope.row.status !== '审批中'"
+          v-if="scope.row.status !== '待审批'"
           type="success"
           @click="viewHandler(scope.row)"
         >
           查看
         </el-button>
+        <!-- v-if="isAuth(['ROOT', 'FILE:ARCHIVE']) && scope.row.filing" -->
+        <el-button text @click="archive(scope.row)"> 归档 </el-button>
       </template>
     </el-table-column>
   </el-table>
+  <ArchiveDialog ref="dialogRef"></ArchiveDialog>
   <el-pagination
     @size-change="sizeChangeHandle"
     @current-change="currentChangeHandle"
@@ -200,27 +208,34 @@ import { storeToRefs } from 'pinia'
 import type { Action } from 'element-plus'
 import { ElMessageBox } from 'element-plus'
 import SearchForm from '../SearchForm/index.vue'
+import ArchiveDialog from '../ArchiveDialog/index.vue'
 import useApprovalStore from '@/stores/onlineoffice/approval/index.ts'
 const approvalStore = useApprovalStore()
-const { total, tableList, approvalInfo } = storeToRefs(approvalStore)
+const { total, tableList, approvalInfo, leaveInfo, reimInfo, reimForm, leaveForm } =
+  storeToRefs(approvalStore)
 const approvalRef = ref()
-const status = ref(1)
+const dialogRef = ref(null)
+const status = ref('待审批')
+const type = ref('员工请假')
 // const id = ref<string>('')
 const loadingShow = ref<boolean>(false)
 const content = ref(null)
+const reim = ref(null)
+const leave = ref(null)
 const dataList = reactive({
   tableData: [],
   pageSize: 10,
   pageIndex: 1,
   total: 0
 })
-const loadData = (queryData) => {
+const loadData = () => {
   let data = {
     size: dataList.pageSize,
     page: dataList.pageIndex,
-    status: 1
+    status: status.value,
+    type: type.value
   }
-  approvalStore.getApprovalList({ ...data, ...queryData })
+  approvalStore.getApprovalList(data)
   dataList.tableData = tableList
   loadingShow.value = false
 }
@@ -228,14 +243,19 @@ loadData()
 //查询审批会议
 const queryHandler = (queryData) => {
   loadingShow.value = true
-  status.value = queryData.status
-  loadData(queryData)
+  if (queryData) {
+    status.value = queryData.status
+    type.value = queryData.type
+  }
+  loadData()
 }
 //展开后显示详细信息
 const expandHandler = (row) => {
   let id = row.id
-  approvalStore.getApprovalInfo(id)
+  approvalStore.getApprovalInfo(id, row)
   content.value = approvalInfo.value
+  leave.value = leaveInfo.value
+  reim.value = reimInfo.value
 }
 
 const sizeChangeHandle = (value) => {
@@ -250,9 +270,9 @@ const currentChangeHandle = (value) => {
 const viewHandler = (row) => {
   approvalRef.value?.toggleRowExpansion(row, true)
 }
-const approvalFn = (id, result) => {
+const approvalFn = (id, result, type) => {
   loadingShow.value = true
-  approvalStore.approval({ id, result })
+  approvalStore.approval({ id, result, type })
   loadData()
 }
 //审批
@@ -264,7 +284,7 @@ const approveHandler = (id) => {
     type: 'warning'
   })
     .then(() => {
-      approvalFn(id, true)
+      approvalFn(id, true, type.value)
       ElMessage({
         type: 'success',
         message: '审批成功'
@@ -272,13 +292,17 @@ const approveHandler = (id) => {
     })
     .catch((action: Action) => {
       if (action === 'cancel') {
-        approvalFn(id, false)
+        approvalFn(id, false, type.value)
         ElMessage({
           type: 'info',
           message: '审批失败'
         })
       }
     })
+}
+//归档
+const archive = (type) => {
+  dialogRef.value?.show(type)
 }
 </script>
 <style lang="less">

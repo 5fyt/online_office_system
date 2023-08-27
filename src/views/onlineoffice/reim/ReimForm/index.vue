@@ -7,7 +7,7 @@
     center
   >
     <div id="pdfDom">
-      <!-- <img :src="qrCodeBase64" class="qrCode" /> -->
+      <img :src="qrCodeBase64" class="qrCode" />
       <h2 class="title">
         费&nbsp;&nbsp;&nbsp;用&nbsp;&nbsp;&nbsp;报&nbsp;&nbsp;&nbsp;销&nbsp;&nbsp;&nbsp;单
       </h2>
@@ -80,20 +80,32 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
+import QRCode from 'qrcode'
 import useReimStore from '@/stores/onlineoffice/Reim/index.ts'
 import { transPdf, smalltoBIG } from '@/utils/translate.ts'
 const reimStore = useReimStore()
 const { reimForm } = storeToRefs(reimStore)
 const visible = ref(false)
 const reimFormInfo = ref(null)
+const qrCodeBase64 = ref(null)
 const showPdf = (id) => {
   console.log(id)
   visible.value = true
   reimStore.getReimInfo(id)
   reimFormInfo.value = reimForm.value
+  getQrCode(id)
+}
+const getQrCode = (id) => {
+  QRCode.toDataURL(String(id))
+    .then((url) => {
+      qrCodeBase64.value = url
+    })
+    .catch((err) => {
+      console.error(err)
+    })
 }
 const getPdf = () => {
-  let title='报销单'
+  let title = '报销单'
   transPdf(title)
 }
 defineExpose({ showPdf })

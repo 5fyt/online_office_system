@@ -7,12 +7,10 @@
       border
       @selection-change="handleSelectionChange"
       @expand-change="expandChange"
-
     >
       <template v-for="(item, index) in contentConfig.contentList" :key="index">
         <template v-if="item.type === 'selection'">
-
-          <el-table-column type="selection" width="50" />
+          <el-table-column type="selection" width="50" :selectable="selectable" />
         </template>
         <template v-if="item.type === 'index'">
           <el-table-column
@@ -42,15 +40,9 @@
           </el-table-column>
         </template>
         <template v-if="item.type === 'expandCustom'">
-          <el-table-column
-            :width="item.width"
-
-            header-align="center"
-            align="center"
-            type="expand"
-          >
+          <el-table-column :width="item.width" header-align="center" align="center" type="expand">
             <template #default="scope">
-              <slot :name="item.slotName" v-bind="scope" ></slot>
+              <slot :name="item.slotName" v-bind="scope"></slot>
             </template>
           </el-table-column>
         </template>
@@ -137,7 +129,7 @@ interface tableType {
   totalCount: number
 }
 const props = defineProps<IProps>()
-const emits = defineEmits(['edit', 'show','expand'])
+const emits = defineEmits(['edit', 'show', 'expand'])
 const penaltyStore = usePenaltyStore()
 const { total, tableList } = storeToRefs(penaltyStore)
 //用户表格里的数据
@@ -167,8 +159,8 @@ const editHandle = (row) => {
 const handleSelectionChange = (value) => {
   deleteId.value = value
 }
-const expandChange=(row)=>{
-  emits('expand',row)
+const expandChange = (row) => {
+  emits('expand', row)
 }
 //交款，以后再写
 const dismissHandle = () => {}
@@ -205,10 +197,9 @@ const deleteHandle = (id) => {
   }
 }
 const selectable = (row, index) => {
-  if (row.status != 2) {
-    return true
+  if (row?.canDelete === false) {
+    return false
   }
-  return false
 }
 
 //当前页数发生变化时

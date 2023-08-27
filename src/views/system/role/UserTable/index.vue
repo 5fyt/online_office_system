@@ -10,6 +10,7 @@
       ref="TableRef"
       :data="tableData.dataList"
       style="width: 100%"
+      v-loading="loading"
       border
       :header-cell-style="{ backgroundColor: '#f1f3f4' }"
       @selection-change="handleSelectionChange"
@@ -59,7 +60,7 @@
                 type="primary"
                 text
                 @click="editHandle(scope.row)"
-                :disabled="auth(['root','role:update']) || scope.row.name === '超级管理员'"
+                :disabled="auth(['root', 'role:update']) || scope.row.name === '超级管理员'"
                 >修改</el-button
               >
               <el-button
@@ -74,7 +75,7 @@
                 type="danger"
                 text
                 @click="deleteHandle(scope.row.id)"
-                :disabled="auth(['root','role:delete']) || scope.row.name === '超级管理员'"
+                :disabled="auth(['root', 'role:delete']) || scope.row.name === '超级管理员'"
                 >删除</el-button
               >
             </template>
@@ -106,7 +107,8 @@
   <dialogForm ref="dialogRef" @add="addUsers" :dialogConfig="dialogConfig"></dialogForm>
 </template>
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 // import SearchForm from '../SearchForm/index.vue'
 // import DialogForm from '../DialogForm/index.vue'
 import SearchForm from '@/components/baseUI/SearchForm/index.vue'
@@ -119,10 +121,13 @@ import dialogConfig from '../constant/dialog.config.ts'
 import useUserStore from '@/stores/system/user/index.ts'
 import { auth } from '@/utils/auth.ts'
 import { storeToRefs } from 'pinia'
+
 import { ElMessage, ElMessageBox } from 'element-plus'
 const userStore = useUserStore()
+const route = useRoute()
 const { users, total, pages } = storeToRefs(userStore)
 const dialogRef = ref()
+const loading = ref(false)
 const id = ref<number>(0) //判断是否是新增还是修改dialog
 const dialogShow = ref(false)
 const btnShow = ref(false)
@@ -142,15 +147,27 @@ const tableData = reactive<tableType>({
 })
 //渲染表格数据
 const tableDataLoad = (formData: any = {}) => {
+  loading.value = true
   let query = {
     page: tableData.pageIndex,
     pageSize: tableData.pageSize
   }
   userStore.getDeptTableList(contentConfig.pageName, { ...query, ...formData })
+  loading.value = false
   tableData.dataList = users
   tableData.totalCount = total
 }
 tableDataLoad()
+watch(
+  () => route.name,
+  (oldValue, newValue) => {
+    if (oldValue === 'Role') {
+      tableData.dataList = []
+      loading.value = true
+      tableDataLoad()
+    }
+  }
+)
 //通过相关数据查询表格中的数据
 const queryUser = (formData) => {
   tableDataLoad(formData)

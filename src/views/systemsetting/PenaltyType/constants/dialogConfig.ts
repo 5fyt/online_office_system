@@ -1,5 +1,5 @@
 const dialogConfig = {
-  pageName: 'type',
+  pageName: 'penalty/type',
   labelWidth: '80px',
   header: {
     addTitle: '新增',
@@ -16,7 +16,8 @@ const dialogConfig = {
         {
           required: true,
           pattern: '(^[1-9]([0-9]+)?(.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9].[0-9]([0-9])?$)',
-          message: '罚款金额格式错误'
+          message: '罚款金额格式错误',
+          trigger: 'blur'
         }
       ]
     },
@@ -27,7 +28,12 @@ const dialogConfig = {
       maxlength: '10',
       class: 'input',
       rules: [
-        { required: true, pattern: '^[a-zA-Z0-9\u4e00-\u9fa5]{2,10}$', message: '违纪类型格式错误' }
+        {
+          required: true,
+          pattern: '^[a-zA-Z0-9\u4e00-\u9fa5]{2,10}$',
+          message: '违纪类型格式错误',
+          trigger: 'blur'
+        }
       ]
     }
   ]

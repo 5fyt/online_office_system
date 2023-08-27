@@ -6,7 +6,8 @@ const searchConfig = {
       prop: 'name',
       placeholder: '角色名称',
       maxlength: '10',
-      class: 'input'
+      class: 'input',
+     
     }
   ]
 }

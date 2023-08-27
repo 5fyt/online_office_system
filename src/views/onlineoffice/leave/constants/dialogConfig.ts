@@ -10,7 +10,7 @@ const dialogConfig = {
       type: 'textarea',
       prop: 'reason',
       label: '请假原因',
-      placeholder: '罚款原因',
+      placeholder: '请假原因',
       rules: [{ required: true, message: '请假原因不能为空' }]
     },
     {

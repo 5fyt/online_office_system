@@ -10,7 +10,7 @@
       <template v-for="(item, index) in contentConfig.contentList" :key="index">
         <template v-if="item.type === 'selection'">
           <!-- :selectable="selectable"  -->
-          <el-table-column type="selection" width="50" />
+          <el-table-column type="selection" width="50" :selectable="selectable" />
         </template>
         <template v-if="item.type === 'index'">
           <el-table-column

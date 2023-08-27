@@ -1,5 +1,11 @@
 <template>
-  <el-dialog title="报销申请" :close-on-click-modal="false" v-model="visible" width="550px">
+  <el-dialog
+    title="报销申请"
+    :close-on-click-modal="false"
+    v-model="visible"
+    width="550px"
+    :before-close="cancel"
+  >
     <el-scrollbar height="470px">
       <el-form :model="dialogForm" ref="formRef" :rules="ruleData" label-width="100px">
         <el-form-item label="报销种类">
@@ -39,7 +45,7 @@
               </el-select>
               <span class="note">请选择项目报销的类别</span>
             </el-form-item>
-            <el-form-item label="备注信息" prop="description">
+            <el-form-item label="备注信息">
               <el-input
                 v-model="item.description"
                 type="textarea"
@@ -61,7 +67,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button type="danger" @click="addHandle">添加项目</el-button>
-        <el-button @click="visible = false">取消</el-button>
+        <el-button @click="cancel">取消</el-button>
         <el-button type="primary" @click="submit">确定</el-button>
       </span>
     </template>
@@ -86,17 +92,17 @@ const dialogForm = reactive({
   ]
 })
 const ruleData = reactive({
-  title: [{ required: true, message: '项目名称必填' }],
-  type: [{ required: true, message: '项目类别必填' }],
+  title: [{ required: true, message: '项目名称必填', trigger: 'blur' }],
+  type: [{ required: true, message: '项目类别必填', trigger: 'blur' }],
   money: [
-    { required: true, message: '报销金额必填' },
+    { required: true, message: '报销金额必填', trigger: 'blur' },
     {
       pattern: '(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)',
       message: '金额格式错误'
     }
   ],
   debit: [
-    { required: true, message: '借款金额必填' },
+    { required: true, message: '借款金额必填', trigger: 'blur' },
     {
       pattern: '(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)',
       message: '报销金额格式错误'
@@ -108,19 +114,33 @@ const visible = ref(false)
 const show = (row) => {
   visible.value = true
 }
-const submit = () => {
-  let data = { ...dialogForm }
-  reimStore.addReim(data)
+const cancel = () => {
+  clearForm()
+}
+const clearForm = () => {
   for (let key in dialogForm) {
     if (key === 'content') {
-      dialogForm[key].forEach((item) => (item = ''))
+      dialogForm[key].forEach((item) => {
+        for (let key in item) {
+          item[key] = ''
+        }
+      })
     } else {
       dialogForm[key] = key === 'type' ? '普通报销' : ''
     }
   }
   visible.value = false
-  emits('confirm')
+}
+const submit = () => {
   formRef.value?.clearValidate()
+  formRef.value?.validate((isOK) => {
+    if (isOK) {
+      let data = { ...dialogForm }
+      reimStore.addReim(data)
+      clearForm()
+      emits('confirm')
+    }
+  })
 }
 const deleteProject = (id) => {
   dialogForm.content = dialogForm.content.splice(id, 1)

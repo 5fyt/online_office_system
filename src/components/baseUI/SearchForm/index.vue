@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-    <el-form :model="searchForm" :inline="true" :rule="searchRule" ref="form">
+    <el-form :model="searchForm" :inline="true" :rule="rulesForm" ref="form">
       <template v-for="(item, index) in props.searchConfig.searchList" :key="index">
         <el-form-item :prop="item.prop">
           <template v-if="item.type === 'input'">
@@ -12,13 +12,37 @@
               :class="item.class"
             />
           </template>
-          <template v-if="item.type === 'selected'">
+          <template v-if="item.type === 'selected' && item.customOption">
             <el-select
               v-model="searchForm[item.prop]"
+              class="input"
               :placeholder="item.placeholder"
-              clearable="clearable"
-              :max-length="item.maxlength"
-              :class="item.class"
+              clearable
+            >
+              <template v-if="item.prop === 'departmentId'">
+                <el-option
+                  v-for="(dept, index) in options.deptList"
+                  :key="index"
+                  :label="dept.deptName"
+                  :value="dept.id"
+                />
+              </template>
+              <template v-if="item.prop === 'roleId'">
+                <el-option
+                  v-for="(role, index) in options.rolesList"
+                  :key="index"
+                  :label="role.roleName"
+                  :value="role.id"
+                />
+              </template>
+            </el-select>
+          </template>
+          <template v-if="item.type === 'selected' && !item.customOption">
+            <el-select
+              v-model="searchForm[item.prop]"
+              class="input"
+              :placeholder="item.placeholder"
+              clearable
             >
               <template v-for="(option, index) in item.options" :key="index">
                 <el-option :label="option.label" :value="option.value" />
@@ -27,47 +51,12 @@
           </template>
         </el-form-item>
       </template>
-      <template v-if="searchConfig.pageName === 'user'">
-        <el-form-item>
-          <el-select
-            v-model="searchForm.roles"
-            placeholder="角色"
-            clearable="clearable"
-            max-length="10"
-            class="input"
-          >
-            <el-option
-              v-for="(role, index) in searchForm.rolesList"
-              :key="index"
-              :label="role.roleName"
-              :value="role.id"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-select
-            v-model="searchForm.dept"
-            placeholder="部门"
-            clearable="clearable"
-            max-length="10"
-            class="input"
-          >
-            <el-option
-              v-for="(dept, index) in searchForm.deptList"
-              :key="index"
-              :label="dept.deptName"
-              :value="dept.id"
-            />
-          </el-select>
-        </el-form-item>
-      </template>
-
       <el-form-item>
         <el-button type="primary" @click="queryData">查询</el-button>
         <el-button
           type="success"
           @click="addFn"
-          v-if="
+          :disabled="
             !auth(['root', 'user:insert']) ||
             !auth(['root', 'role:insert']) ||
             !auth(['root', 'department:insert']) ||
@@ -78,7 +67,7 @@
         <el-button
           type="danger"
           @click="moreDelete"
-          v-if="
+          :disabled="
             !auth(['root', 'user:delete']) ||
             !auth(['root', 'role:delete']) ||
             !auth(['root', 'department:delete']) ||
@@ -110,48 +99,38 @@ const { departLists, roleLists } = storeToRefs(userStore)
 const form = ref<FormInstance>()
 
 //搜索 表单数据
-const searchForm = reactive({
-  name: '',
-  sex: '',
-  role: '',
-  dept: '',
-  status: '',
-  rolesList: [],
-  deptList: [],
-  deptObj: null, //一定得置null 如果设置成{}拿不到具体的数据
-  roleObj: null
+
+const initForm = {}
+const rulesForm = {}
+props.searchConfig.searchList.forEach((item) => {
+  initForm[item.prop] = ''
 })
-//表单数据校验规则
-const searchRule = reactive({
-  name: [
-    { required: true, message: '请输入姓名', trigger: 'blur' },
-    { min: 2, max: 9, message: '姓名格式错误', trigger: 'blur' }
-  ]
+props.searchConfig.searchList.forEach((item) => {
+  rulesForm[item.prop] = item.rules
+})
+const searchForm = reactive(initForm)
+const ruleData = reactive(rulesForm)
+const options = reactive({
+  rolesList: [],
+  deptList: []
 })
 //获取部门列表
 const getDeptmentList = () => {
   userStore.getDeptList()
-  searchForm.deptObj = JSON.parse(localStorage.getItem('departList'))
+  let deptObj = JSON.parse(localStorage.getItem('departList'))
   //封装后端返回的对象数据
-  searchForm.deptList = objTransArrayObj('dept', searchForm.deptObj)
+  options.deptList = objTransArrayObj('dept', deptObj)
 }
 //获取角色列表
 const getRolesList = () => {
   userStore.getRoleList()
-  searchForm.roleObj = JSON.parse(localStorage.getItem('roleList'))
-  searchForm.rolesList = objTransArrayObj('role', searchForm.roleObj)
+  let roleObj = JSON.parse(localStorage.getItem('roleList'))
+  options.rolesList = objTransArrayObj('role', roleObj)
 }
 
 //搜索后显示结果，查询
 const queryData = () => {
-  let formData = {
-    name: searchForm.name,
-    gender: searchForm.sex,
-    roleId: searchForm.role,
-    departmentId: searchForm.dept,
-    stauts: searchForm.status
-  }
-  emit('queryUser', formData)
+  emit('queryUser', { ...searchForm })
   form.value?.resetFields()
 }
 //新增用户

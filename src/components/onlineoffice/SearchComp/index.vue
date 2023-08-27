@@ -59,7 +59,7 @@
           @click="searchHandle()"
           v-if="
             searchConfig.pageName === 'penalty' ||
-            searchConfig.pageName === 'type' ||
+            searchConfig.pageName === 'penalty/type' ||
             searchConfig.pageName === 'reimburse'
           "
           >查询</el-button
@@ -69,7 +69,7 @@
           @click="addHandle()"
           v-if="
             searchConfig.pageName === 'penalty' ||
-            searchConfig.pageName === 'type' ||
+            searchConfig.pageName === 'penalty/type' ||
             searchConfig.pageName === 'reimburse'
           "
         >
@@ -79,7 +79,7 @@
         <el-button
           type="danger"
           @click="deleteHandle()"
-          v-if="searchConfig.pageName === 'penalty' || searchConfig.pageName === 'type'"
+          v-if="searchConfig.pageName === 'penalty' || searchConfig.pageName === 'penalty/type'"
         >
           批量删除
         </el-button>
@@ -150,12 +150,17 @@ const getDeptmentList = () => {
 getTypeList()
 getDeptmentList()
 const searchHandle = () => {
-  let searchInfo = {
-    startDate: dayjs(searchForm.date[0]).format('YYYY-MM-DD'),
-    endDate: dayjs(searchForm.date[1]).format('YYYY-MM-DD')
+  if (searchForm.date) {
+    let searchInfo = {
+      startDate: dayjs(searchForm.date[0]).format('YYYY-MM-DD'),
+      endDate: dayjs(searchForm.date[1]).format('YYYY-MM-DD')
+    }
+    let { date, ...dateForm } = searchForm
+    emits('searchInfo', { ...dateForm, ...searchInfo })
+  } else {
+    emits('searchInfo', { ...searchForm })
   }
-  let { date, ...dateForm } = searchForm
-  emits('searchInfo', { ...dateForm, ...searchInfo })
+
   formRef.value?.resetFields()
 }
 const addHandle = () => {

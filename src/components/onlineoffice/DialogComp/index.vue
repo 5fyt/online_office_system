@@ -145,20 +145,24 @@ const show = (row) => {
   visible.value = true
 }
 const submit = () => {
-  if (uid.value) {
-    let { members, ...info } = dialogForm
-    let data = {
-      id: uid.value,
-      ...info
-    }
-    penaltyStore.updateDatas(props.dialogConfig.pageName, data)
-  } else {
-    let data = { ...dialogForm }
-    penaltyStore.addDatas(props.dialogConfig.pageName, data)
-  }
-  visible.value = false
-  emits('confirm')
   formRef.value?.clearValidate()
+  formRef.value?.validate((ok) => {
+    if (ok) {
+      if (uid.value) {
+        let { members, ...info } = dialogForm
+        let data = {
+          id: uid.value,
+          ...info
+        }
+        penaltyStore.updateDatas(props.dialogConfig.pageName, data)
+      } else {
+        let data = { ...dialogForm }
+        penaltyStore.addDatas(props.dialogConfig.pageName, data)
+      }
+      visible.value = false
+      emits('confirm')
+    }
+  })
 }
 
 defineExpose({ show, submit })
