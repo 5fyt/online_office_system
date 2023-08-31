@@ -120,10 +120,10 @@
             </tbody>
           </table>
           <template v-if="scope.row.type === '员工请假'">
-            <img :src="leaveForm" alt="Image"  style="width: 480px; height: 300px" />
+            <img :src="leaveForm" alt="Image" style="width: 480px; height: 300px" />
           </template>
           <template v-if="scope.row.type === '报销申请'">
-            <img :src="ReimForm" alt="Image"  style="width: 480px; height: 300px" />
+            <img :src="ReimForm" alt="Image" style="width: 480px; height: 300px" />
           </template>
           <img
             style="width: 480px; height: 300px"
@@ -174,6 +174,7 @@
           text
           @click="approveHandler(scope.row.id)"
           type="primary"
+          v-if="auth(['root', 'leave:approve:all']) || auth(['root', 'leave:approve:department'])"
           :disabled="status === 2"
         >
           审批
@@ -187,7 +188,9 @@
           查看
         </el-button>
         <!-- v-if="isAuth(['ROOT', 'FILE:ARCHIVE']) && scope.row.filing" -->
-        <el-button text @click="archive(scope.row)"> 归档 </el-button>
+        <el-button text @click="archive(scope.row)" v-if="auth(['root', 'leave:approve:archive'])">
+          归档
+        </el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -207,6 +210,7 @@ import { reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { Action } from 'element-plus'
 import { ElMessageBox } from 'element-plus'
+import { auth } from '@/utils/auth.ts'
 import SearchForm from '../SearchForm/index.vue'
 import ArchiveDialog from '../ArchiveDialog/index.vue'
 import useApprovalStore from '@/stores/onlineoffice/approval/index.ts'

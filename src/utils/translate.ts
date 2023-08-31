@@ -3,8 +3,6 @@ import 'dayjs/locale/zh-cn'
 import html2Canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import useApprovalStore from '@/stores/onlineoffice/approval/index'
-const approvalStore = useApprovalStore()
-
 dayjs.locale('zh-cn')
 export const objTransArrayObj = (type: string, objData: any) => {
   let arr = []
@@ -61,6 +59,7 @@ export const transTime = (meetings: any) => {
 }
 //dom 转成pdf文件
 export const transPdf = (title: string) => {
+  const approvalStore = useApprovalStore()
   //配置JS生成PDF的公共函数
   const element = document.getElementById('pdfDom')
   if (!element) {
@@ -143,4 +142,17 @@ export const smalltoBIG = (n: number) => {
       .replace(/(零.)+/g, '零')
       .replace(/^整$/, '零元整')
   )
+}
+//base64转url
+export const fnBase64ToUrl = (data: any) => {
+  var parts = data.split(';base64,'),
+    contentType = parts[0].split(':')[1],
+    raw = window.atob(parts[1]),
+    length = raw.length,
+    arr = new Uint8Array(length)
+  for (var i = 0; i < length; i++) {
+    arr[i] = raw.charCodeAt(i)
+  }
+  var blob = new Blob([arr], { type: contentType })
+  return URL.createObjectURL(blob)
 }

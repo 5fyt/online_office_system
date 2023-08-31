@@ -36,6 +36,12 @@ const contentConfig = {
       prop: 'description',
       label: '备注',
       minWidth: '250'
+    },
+    {
+      type:'handler',
+      label:'操作',
+      btnShow:false,
+      minWidth: '200'
     }
   ]
 }

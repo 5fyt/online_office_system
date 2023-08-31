@@ -71,7 +71,7 @@
     </el-upload>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="user.updatePasswordVisible = false">取消</el-button>
+        <el-button @click="user.updateAvatarVisible = false">取消</el-button>
         <el-button type="primary" @click="Submit">上传</el-button>
       </span>
     </template>
@@ -119,7 +119,8 @@ const user = reactive({
   name: '',
   photo: localStorage.getItem('photo') || '',
   //是否显示修改登陆密码的弹窗
-  updatePasswordVisible: false
+  updatePasswordVisible: false,
+  updateAvatarVisible:false
 })
 const imageUrl = ref('')
 const loginOutRef = ref<FormInstance>()

@@ -15,7 +15,7 @@ interface userType {
   pages: number
   total: number
   users: any[]
-  permissions:any[]
+  permissions: any[]
 }
 const useUserStore = defineStore('user', {
   state: (): userType => ({
@@ -24,7 +24,7 @@ const useUserStore = defineStore('user', {
     pages: 0,
     total: 0,
     users: [],
-    permissions:[]
+    permissions: []
   }),
   actions: {
     //获取部门列表
@@ -44,42 +44,42 @@ const useUserStore = defineStore('user', {
       })
     },
     //获取角色所有权限
-    getRolePermissions(){
+    getRolePermissions() {
       let that = this
-      getRolePermission(function(res:any){
-        that.permissions=res.permissions
-        localStorage.setItem('rolePermissions',JSON.stringify(that.permissions))
+      getRolePermission(function (res: any) {
+        that.permissions = res.permissions
+        localStorage.setItem('rolePermissions', JSON.stringify(that.permissions))
       })
     },
     //分页搜索用户数据
-    getDeptTableList(pageName:string,data: any) {
+    getDeptTableList(pageName: string, data: any) {
       let that = this
-      getUserTableList(pageName,data, function (res: any) {
-
-        const { pages, total} = res
+      getUserTableList(pageName, data, function (res: any) {
+        const { pages, total } = res
         that.pages = pages
         that.total = total
-        if(res.hasOwnProperty('users')){
+        if (res.hasOwnProperty('users')) {
           that.users = res.users
-        }else if(res.hasOwnProperty('departments')){
+        } else if (res.hasOwnProperty('departments')) {
           that.users = res.departments
-        }else{
-          that.users=res.roles
+        } else if (res.hasOwnProperty('meetingRooms')) {
+          that.users = res.meetingRooms
+        } else {
+          that.users = res.roles
         }
-
       })
     },
     //添加用户、部门、角色
-    addUsers(pageName:string,data: any) {
-      addUser(pageName,data, function () {})
+    addUsers(pageName: string, data: any) {
+      addUser(pageName, data, function () {})
     },
     //修改用户、部门、角色
-    updateUsers(pageName:string,data: any) {
-      updateUser(pageName,data, function () {})
+    updateUsers(pageName: string, data: any) {
+      updateUser(pageName, data, function () {})
     },
     //删除用户、部门、角色
-    deleteUsers(pageName:string,data: number[]) {
-      deleteUser(pageName,data, function (res: any) {
+    deleteUsers(pageName: string, data: number[]) {
+      deleteUser(pageName, data, function (res: any) {
         if (res.code === 200) {
           ElMessage({
             message: '删除成功',

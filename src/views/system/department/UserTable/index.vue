@@ -58,15 +58,12 @@
                 type="primary"
                 text
                 @click="editHandle(scope.row)"
-                :disabled="auth(['root', 'department:update'])"
+                :disabled="scope.row.count > 0 || !auth(['root'])"
                 >修改</el-button
-              >
-              <el-button type="primary" v-if="item.btnShow" text @click="dismissHandle(scope.row)"
-                >离职</el-button
               >
               <el-button
                 type="danger"
-                :disabled="scope.row.count > 0 || auth(['root', 'department:delete'])"
+                :disabled="scope.row.count > 0 || !auth(['root'])"
                 text
                 @click="deleteHandle(scope.row.id)"
                 >删除</el-button

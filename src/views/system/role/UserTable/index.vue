@@ -42,8 +42,8 @@
             :min-width="item.minWidth"
           >
             <template #default="scope">
-              <el-tag type="success">{{
-                scope.row[item.prop] === 1 ? item.title.isFalse : item.title.isTrue
+              <el-tag :type="scope.row[item.prop] ? 'success' : 'danger'">{{
+                scope.row[item.prop] ? item.title.isTrue : item.title.isFalse
               }}</el-tag>
             </template>
           </el-table-column>
@@ -60,22 +60,17 @@
                 type="primary"
                 text
                 @click="editHandle(scope.row)"
-                :disabled="auth(['root', 'role:update']) || scope.row.name === '超级管理员'"
+                v-if="auth(['root'])"
+                :disabled="scope.row.staffCount > 0 || scope.row.systemic"
                 >修改</el-button
               >
-              <el-button
-                type="primary"
-                v-if="item.btnShow"
-                :disabled="btnShow"
-                text
-                @click="dismissHandle(scope.row)"
-                >离职</el-button
-              >
+
               <el-button
                 type="danger"
                 text
                 @click="deleteHandle(scope.row.id)"
-                :disabled="auth(['root', 'role:delete']) || scope.row.name === '超级管理员'"
+                v-if="auth(['root'])"
+                :disabled="scope.row.staffCount >0 || scope.row.systemic"
                 >删除</el-button
               >
             </template>
@@ -183,14 +178,6 @@ const selectable = (row) => {
 //勾选中的每个数据组成的数组
 const handleSelectionChange = (value) => {
   deleteId.value = value
-}
-//离职用户
-const dismissHandle = ({ id }) => {
-  if (id) {
-    userStore.leaveUsers(id)
-    tableDataLoad()
-    btnShow.value = true
-  }
 }
 
 //删除用户，批量删除和单个删除

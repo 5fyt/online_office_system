@@ -7,16 +7,17 @@ const contentConfig = {
       label: ''
     },
     {
-      type: 'index',
-      label: '序号',
-      width: '100'
-    },
-    {
       type: 'expand',
       prop: 'reason',
       desc: '请假原因: ',
       width: '40'
     },
+    {
+      type: 'index',
+      label: '序号',
+      width: '100'
+    },
+
     {
       type: 'normal',
       prop: 'name',

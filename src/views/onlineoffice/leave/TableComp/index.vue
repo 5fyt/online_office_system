@@ -76,7 +76,7 @@
                 type="danger"
                 text
                 @click="deleteHandle(scope.row.id)"
-                :disabled="scope.row.status !== '已同意'"
+                :disabled="scope.row.status === '已同意'"
                 >删除</el-button
               >
             </template>

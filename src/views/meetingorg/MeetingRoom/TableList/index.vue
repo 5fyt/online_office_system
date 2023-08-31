@@ -41,9 +41,11 @@
             :min-width="item.minWidth"
           >
             <template #default="scope">
-              <el-tag type="success" v-if="item.label === '状态'">{{
-                scope.row.status === 1 ? '可使用' : '已停用'
-              }}</el-tag>
+              <el-tag
+                :type="scope.row.status === 1 ? 'success' : 'danger'"
+                v-if="item.label === '状态'"
+                >{{ scope.row.status === 1 ? '可使用' : '已停用' }}</el-tag
+              >
               <span v-else>{{ scope.row.max }}人</span>
             </template>
           </el-table-column>
@@ -56,17 +58,14 @@
             :min-width="item.minWidth"
           >
             <template #default="scope">
-              <el-button
-                type="primary"
-                text
-                @click="editHandle(scope.row)"
-                :disabled="auth(['root', 'meeting:update'])"
+              <el-button type="primary" text @click="editHandle(scope.row)" v-if="auth(['root'])"
                 >修改</el-button
               >
 
               <el-button
                 type="danger"
-                :disabled="scope.row.count > 0 || auth(['root', 'meeting:delete'])"
+                v-if="auth(['root'])"
+                :disabled="!scope.row.canDelete"
                 text
                 @click="deleteHandle(scope.row.id)"
                 >删除</el-button
@@ -100,7 +99,8 @@
   <dialogForm ref="dialogRef" @add="addUsers" :dialogConfig="dialogConfig"></dialogForm>
 </template>
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 // import SearchForm from '../SearchForm/index.vue'
 // import DialogForm from '../DialogForm/index.vue'
 import SearchForm from '@/components/baseUI/SearchForm/index.vue'
@@ -115,6 +115,7 @@ import { auth } from '@/utils/auth.ts'
 import { storeToRefs } from 'pinia'
 import { ElMessage, ElMessageBox } from 'element-plus'
 const userStore = useUserStore()
+const route = useRoute()
 const { users, total, pages } = storeToRefs(userStore)
 const dialogRef = ref()
 const id = ref<number>(0) //判断是否是新增还是修改dialog
@@ -144,6 +145,16 @@ const tableDataLoad = (formData: any = {}) => {
   tableData.totalCount = total
 }
 tableDataLoad()
+watch(
+  () => route.name,
+  (oldValue, newValue) => {
+    if (oldValue === 'MeetingRoom') {
+      tableData.dataList = []
+      loading.value = true
+      tableDataLoad()
+    }
+  }
+)
 //通过相关数据查询表格中的数据
 const queryUser = (formData) => {
   tableDataLoad(formData)
@@ -160,7 +171,6 @@ const selectable = (row) => {
 const handleSelectionChange = (value) => {
   deleteId.value = value
 }
-
 
 //删除用户，批量删除和单个删除
 const deleteHandle = (id) => {

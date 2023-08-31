@@ -7,6 +7,7 @@ import {
   reimInfo,
   archiveFn
 } from '@/api/onlineoffice/approval/index'
+import { fnBase64ToUrl } from '@/utils/translate'
 import { ElMessage } from 'element-plus'
 interface StateType {
   total: number
@@ -47,11 +48,13 @@ const useApprovalStore = defineStore('approval', {
     },
     getLeaveForm(value: any) {
       this.leaveForm = value
-      localStorage.setItem('leave', JSON.stringify(this.leaveForm))
+      let url = fnBase64ToUrl(this.leaveForm)
+      localStorage.setItem('leave', JSON.stringify(url))
     },
     getReimForm(value: any) {
       this.reimForm = value
-      localStorage.setItem('reim', JSON.stringify(this.reimForm))
+      let url = fnBase64ToUrl(this.reimForm)
+      localStorage.setItem('reim', JSON.stringify(url))
     },
     getApprovalInfo(id: string, row: any) {
       let that = this

@@ -23,15 +23,27 @@
             <SvgIcon name="users_fill" class="icon-svg" />
             <span>组织管理</span>
           </template>
-          <el-menu-item index="Dept" @click="$router.push({ name: 'Dept' })">
+          <el-menu-item
+            index="Dept"
+            @click="$router.push({ name: 'Dept' })"
+            v-if="auth(['root', 'department:select'])"
+          >
             <SvgIcon name="company_fill" class="icon-svg" />
             <span>部门管理</span>
           </el-menu-item>
-          <el-menu-item index="Role" @click="$router.push({ name: 'Role' })">
+          <el-menu-item
+            index="Role"
+            @click="$router.push({ name: 'Role' })"
+            v-if="auth(['root', 'role:select'])"
+          >
             <SvgIcon name="role_fill" class="icon-svg" />
             <span>角色管理</span>
           </el-menu-item>
-          <el-menu-item index="User" @click="$router.push({ name: 'User' })">
+          <el-menu-item
+            index="User"
+            @click="$router.push({ name: 'User' })"
+            v-if="auth(['root', 'staff:select'])"
+          >
             <SvgIcon name="user_fill" class="icon-svg" />
             <span>用户管理</span>
           </el-menu-item>
@@ -69,7 +81,11 @@
             <SvgIcon name="meeting_fill" class="icon-svg" />
             <span>会议管理</span>
           </template>
-          <el-menu-item index="MeetingRoom" @click="$router.push({ name: 'MeetingRoom' })">
+          <el-menu-item
+            index="MeetingRoom"
+            @click="$router.push({ name: 'MeetingRoom' })"
+            v-if="auth(['root', 'meetingroom:select'])"
+          >
             <SvgIcon name="warehouse_fill" class="icon-svg" />
             <span>会议室</span>
           </el-menu-item>
@@ -102,7 +118,7 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-
+import { auth } from '@/utils/auth.ts'
 const menuActiveName = ref('')
 const route = useRoute()
 const sidebar = reactive({
@@ -120,8 +136,8 @@ watch(
     menuActiveName.value = oldValue
   }
 )
-const selectHandle=(value,v)=>{
-  console.log(value,v)
+const selectHandle = (value, v) => {
+  console.log(value, v)
 }
 defineExpose({ closeAside })
 </script>

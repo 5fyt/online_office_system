@@ -59,16 +59,25 @@
               <el-button
                 type="primary"
                 text
+                v-if="auth(['root', 'staff:update'])"
                 @click="editHandle(scope.row)"
-                :disabled="scope.row.role === '超级管理员' || auth(['root', 'staff:update'])"
+                :disabled="scope.row.isRoot && !auth(['root'])"
                 >修改</el-button
               >
-              <el-button type="primary" v-if="item.btnShow" text @click="dismissHandle(scope.row)"
+              <el-button
+                type="primary"
+                v-if="item.btnShow && auth(['root', 'staff:resign'])"
+                :disabled="
+                  scope.row.isRoot || !auth(['root', 'staff:resign']) || scope.row.isSelf === true
+                "
+                text
+                @click="dismissHandle(scope.row)"
                 >离职</el-button
               >
               <el-button
                 type="danger"
-                :disabled="scope.row.role === '超级管理员' || auth(['root', 'staff:delete'])"
+                v-if="auth(['root', 'staff:delete'])"
+                :disabled="scope.row.isRoot === true || scope.row.isSelf === true"
                 text
                 @click="deleteHandle(scope.row.id)"
                 >删除</el-button
@@ -157,7 +166,7 @@ watch(
     console.log(oldValue)
     if (oldValue === 'User') {
       tableData.dataList = []
-       loading.value = true
+      loading.value = true
       tableDataLoad()
     }
   }
@@ -168,8 +177,8 @@ const queryUser = (formData) => {
 }
 //选项发生变化时触发 ,将超级管理员设置为禁止删除
 const selectable = (row) => {
-  if (row.hasOwnProperty('role')) {
-    return row.role.includes('超级管理员') ? false : true
+  if (row.hasOwnProperty('isRoot')) {
+    return row.isRoot
   } else {
     return true
   }

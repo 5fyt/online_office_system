@@ -80,11 +80,11 @@
           </el-form-item>
         </template>
         <!-- 会议室的修改的状态 -->
-        <template v-if="id">
+        <template v-if="id && dialogConfig.pageName === 'meeting-room'">
           <el-form-item label="状态">
             <el-select v-model="dialogForm.status" clearable>
-              <el-option label="可使用" value="1" />
-              <el-option label="已停用" value="0" />
+              <el-option label="可使用" :value="1" />
+              <el-option label="已停用" :value="2" />
             </el-select>
           </el-form-item>
         </template>
@@ -134,7 +134,7 @@ for (let item of props.dialogConfig.dialogList) {
   initForm[item.prop] = item.prop === 'permissions' ? [] : ''
 }
 const dialogForm = reactive(initForm)
-console.log(dialogForm)
+
 //根据配置的dialog里面的rule来实现双向绑定
 const initRule = {}
 const otherRule = {
@@ -150,6 +150,7 @@ const dialogRules = reactive({ ...initRule, ...otherRule })
 
 //展示部门和角色列表
 const showList = () => {
+  userStore.getDeptList()
   let roleObj = JSON.parse(localStorage.getItem('roleList'))
   let departObj = JSON.parse(localStorage.getItem('departList'))
   dialogList.roleList = objTransArrayObj('role', roleObj)
@@ -163,18 +164,18 @@ const showPermissionList = () => {
 }
 //回显数据点击修改，点击添加置空
 const showVisible = (data) => {
+  dialogRef.value?.clearValidate()
   dialogVisible.value = true
   id.value = data?.id
   if (data?.id) {
-    console.log('data', data)
     let { id, ...obj } = data
     for (let key in obj) {
       dialogForm[key] = obj[key]
     }
   } else {
-    //修改后，再点击添加要将数据置空
+    //修改后，再点击添加要将数据置空,这里permissions也要变成[]
     for (let key in dialogForm) {
-      dialogForm[key] = ''
+      dialogForm[key] = key === 'permissions' ? [] : ''
     }
   }
 }
@@ -189,15 +190,25 @@ const confirmBtn = () => {
     let data = {
       ...dialogForm
     }
-    console.log(data)
+
     userStore.addUsers(props.dialogConfig.pageName, data)
     emit('add', dialogForm)
   } else {
-    let data = {
-      id: id.value,
-      ...dialogForm
+    if (props.dialogConfig.pageName === 'role') {
+      const { permissionCount, staffCount, systemic, ...otherInfo } = dialogForm
+      let data = {
+        id: id.value,
+        ...otherInfo
+      }
+      userStore.updateUsers(props.dialogConfig.pageName, data)
+    } else {
+      let data = {
+        id: id.value,
+        ...dialogForm
+      }
+      userStore.updateUsers(props.dialogConfig.pageName, data)
     }
-    userStore.updateUsers(props.dialogConfig.pageName, data)
+
     emit('add', dialogForm)
   }
   dialogVisible.value = false

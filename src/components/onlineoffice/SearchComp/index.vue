@@ -3,7 +3,13 @@
     <el-form :inline="true" :model="searchForm" :rules="ruleData" ref="formRef">
       <template v-for="(item, index) in searchConfig.searchList" :key="index">
         <el-form-item :prop="item.prop">
-          <template v-if="item.type === 'input'">
+          <template
+            v-if="
+              item.type === 'input' &&
+              (auth(['root', `${searchConfig.pageName}:select:all`]) ||
+                auth(['root', `${searchConfig.pageName}:select:department`]))
+            "
+          >
             <el-input
               v-model="searchForm[item.prop]"
               :placeholder="item.placeholder"
@@ -27,7 +33,12 @@
               :placeholder="item.placeholder"
               clearable
             >
-              <template v-if="item.prop === 'department'">
+              <template
+                v-if="
+                  item.prop === 'department' &&
+                  !auth(['root', `${searchConfig.pageName}:select:department`])
+                "
+              >
                 <el-option
                   v-for="one in options.departmentList"
                   :label="one.deptName"
@@ -109,6 +120,7 @@ import dayjs from 'dayjs'
 import usePenaltyStore from '@/stores/onlineoffice/penaltyfine/index.ts'
 import useUserStore from '@/stores/system/user/index.ts'
 import { objTransArrayObj } from '@/utils/translate.ts'
+import { auth } from '@/utils/auth.ts'
 interface IProps {
   searchConfig: {
     pageName: string

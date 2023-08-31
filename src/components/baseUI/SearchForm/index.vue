@@ -56,23 +56,13 @@
         <el-button
           type="success"
           @click="addFn"
-          :disabled="
-            !auth(['root', 'user:insert']) ||
-            !auth(['root', 'role:insert']) ||
-            !auth(['root', 'department:insert']) ||
-            !auth(['root', 'meeting:insert'])
-          "
+          v-if="auth(['root']) || auth(['root', 'meeting:insert'])"
           >新增</el-button
         >
         <el-button
           type="danger"
           @click="moreDelete"
-          :disabled="
-            !auth(['root', 'user:delete']) ||
-            !auth(['root', 'role:delete']) ||
-            !auth(['root', 'department:delete']) ||
-            !auth(['root', 'meeting:delete'])
-          "
+          v-if="auth(['root']) || auth(['root', 'meeting:delete'])"
           >批量删除</el-button
         >
       </el-form-item>

@@ -112,11 +112,12 @@ const getMembers = () => {
 getTypeList()
 getMembers()
 const disabledDate = (date) => {
- return dayjs(date.toLocaleDateString()).isBefore(new Date().toLocaleDateString())
+  return dayjs(date.toLocaleDateString()).isBefore(new Date().toLocaleDateString())
 }
 const show = (row) => {
+  formRef.value?.clearValidate()
   for (let key in dialogForm) {
-    initForm[key] = key === 'type' ? '1' : ''
+    dialogForm[key] = key === 'type' ? '1' : ''
   }
   visible.value = true
 }
