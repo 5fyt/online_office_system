@@ -58,7 +58,7 @@
                 type="primary"
                 text
                 @click="editHandle(scope.row)"
-                :disabled="scope.row.count > 0 || !auth(['root'])"
+                :disabled="!auth(['root'])"
                 >修改</el-button
               >
               <el-button

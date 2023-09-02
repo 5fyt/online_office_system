@@ -1,6 +1,5 @@
 <template>
   <div>
-    <SearchComp :searchConfig="searchConfig" @searchInfo="searchInfo"></SearchComp>
     <div id="chart-container">
       <el-row :gutter="100">
         <el-col :span="8"><div class="chart" id="chart-1"></div></el-col>
@@ -14,14 +13,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import SearchComp from '@/components/onlineoffice/SearchComp/index.vue'
-import searchConfig from './constants/seachConfig.ts'
+import { chartsData } from '@/api/onlineoffice/leaveorg/index.ts'
 import { ref, onMounted, nextTick } from 'vue'
 import $ from 'jquery'
 import * as echarts from 'echarts'
 const data = ref([])
 //图表一
-const loadChartOne = () => {
+const loadChartOne = (data) => {
+  console.log(data)
   let option_1 = {
     title: {
       show: false,
@@ -52,13 +51,7 @@ const loadChartOne = () => {
             }
           }
         },
-        data: [
-          { value: 335, name: 'A' },
-          { value: 310, name: 'B' },
-          { value: 234, name: 'C' },
-          { value: 135, name: 'D' },
-          { value: 1548, name: 'E' }
-        ]
+        data: data
       }
     ]
   }
@@ -68,11 +61,87 @@ const loadChartOne = () => {
 }
 
 //图表二
-const loadChartTwo = () => {}
+const loadChartTwo = (data) => {
+  let option_2 = {
+    title: {
+      show: false,
+      text: '暂无数据',
+      left: 'center',
+      top: 'center',
+      textStyle: {
+        color: 'pink',
+        fontSize: 16,
+        fontWeight: 400
+      }
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    series: [
+      {
+        name: '罚款类型',
+        type: 'pie',
+        radius: ['40%', '70%'],
+        avoidLabelOverlap: false,
+        label: {
+          formatter: '{name|{b}}',
+          rich: {
+            time: {
+              fontSize: 12,
+              color: '#999'
+            }
+          }
+        },
+        data: data
+      }
+    ]
+  }
+  let chart = echarts.init(document.getElementById('chart-2'))
+  // console.log(chart)
+  chart.setOption(option_2)
+}
 //图表三
-const loadChartThree = () => {}
+const loadChartThree = (data) => {
+  let option_3 = {
+    title: {
+      show: false,
+      text: '暂无数据',
+      left: 'center',
+      top: 'center',
+      textStyle: {
+        color: 'pink',
+        fontSize: 16,
+        fontWeight: 400
+      }
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    series: [
+      {
+        name: '罚款类型',
+        type: 'pie',
+        radius: ['40%', '70%'],
+        avoidLabelOverlap: false,
+        label: {
+          formatter: '{name|{b}}',
+          rich: {
+            time: {
+              fontSize: 12,
+              color: '#999'
+            }
+          }
+        },
+        data: data
+      }
+    ]
+  }
+  let chart = echarts.init(document.getElementById('chart-3'))
+  // console.log(chart)
+  chart.setOption(option_3)
+}
 //图表四
-const loadChartFour = () => {
+const loadChartFour = (data) => {
   let option_4 = {
     title: {
       text: '全年违纪统计图'
@@ -135,7 +204,7 @@ const loadChartFour = () => {
           focus: 'series'
         },
         smooth: true,
-        data: [10, 22, 28, 43, 49]
+        data: data.x
       },
       {
         name: '未交费',
@@ -146,7 +215,7 @@ const loadChartFour = () => {
           focus: 'series'
         },
         smooth: true,
-        data: [5, 4, 3, 5, 10]
+        data: data.y
       }
     ]
   }
@@ -154,12 +223,18 @@ const loadChartFour = () => {
   chart.setOption(option_4)
 }
 const loadList = () => {
-  loadChartOne()
-  loadChartFour()
+  chartsData((res) => {
+    const { charOne, charTwo, charThree, charFour } = res
+    loadChartOne(charOne)
+    loadChartTwo(charTwo)
+    loadChartThree(charThree)
+    let chartFour = { x: charFour.one, y: charFour.two }
+    loadChartFour(chartFour)
+  })
 }
 
 onMounted(() => {
-  //bug ,要将dom挂载后在初始化表格，否则会出现ECharts] Can't get DOM width or height. Please check dom.clientWidth and dom.clientHeight. 
+  //bug ,要将dom挂载后在初始化表格，否则会出现ECharts] Can't get DOM width or height. Please check dom.clientWidth and dom.clientHeight.
   setTimeout(() => {
     loadList()
   }, 800)

@@ -108,23 +108,38 @@
               <tr>
                 <th><span>审批结果</span></th>
                 <td>
-                  <span v-if="scope.row.status != '已结束'">审批中</span>
-                  <span v-if="scope.row.status == '已结束' && scope.row.result == '同意'"
-                    >已同意</span
-                  >
-                  <span v-if="scope.row.status == '已结束' && scope.row.result == '不同意'"
-                    >已拒绝</span
-                  >
+                  <span>{{ scope.row.status }}</span>
                 </td>
               </tr>
             </tbody>
           </table>
+          <!-- <template v-for="(item, index) in reim.urls" :key="index">
+            <img :src="item" alt="Image" style="width: 200px; height: 300px" />
+          </template> -->
+          <template v-if="scope.row.type === '报销审批'">
+            <div class="block text-center" m="t-4">
+              <el-carousel trigger="click" height="300px" :autoplay="false">
+                <el-carousel-item v-for="(item, index) in reim?.urls" :key="index">
+                  <h3 class="small justify-center" text="2xl">
+                    <img :src="item" alt="Image" />
+                  </h3>
+                </el-carousel-item>
+              </el-carousel>
+            </div>
+          </template>
+
           <template v-if="scope.row.type === '员工请假'">
-            <img :src="leaveForm" alt="Image" style="width: 480px; height: 300px" />
+            <div class="block text-center" m="t-4">
+              <el-carousel trigger="click" height="300px" :autoplay="false">
+                <el-carousel-item v-for="(item, index) in leave?.urls" :key="index">
+                  <h3 class="small justify-center" text="2xl">
+                    <img :src="item" alt="Image" />
+                  </h3>
+                </el-carousel-item>
+              </el-carousel>
+            </div>
           </template>
-          <template v-if="scope.row.type === '报销申请'">
-            <img :src="ReimForm" alt="Image" style="width: 480px; height: 300px" />
-          </template>
+
           <img
             style="width: 480px; height: 300px"
             src="../../../../assets/trtc/uTools_1691583602082.png"
@@ -164,6 +179,7 @@
     <el-table-column prop="status" header-align="center" align="center" label="状态" min-width="50">
       <template #default="scope">
         <el-tag v-if="scope.row.status === '审批中'" type="warning">{{ scope.row.status }}</el-tag>
+        <el-tag v-if="scope.row.status === '归档中'" type="warning">{{ scope.row.status }}</el-tag>
         <el-tag v-if="scope.row.status === '已同意'" type="success">{{ scope.row.status }}</el-tag>
         <el-tag v-if="scope.row.status === '已拒绝'" type="info">{{ scope.row.status }}</el-tag>
       </template>
@@ -172,29 +188,45 @@
       <template #default="scope">
         <el-button
           text
-          @click="approveHandler(scope.row.id)"
-          type="primary"
-          v-if="auth(['root', 'leave:approve:all']) || auth(['root', 'leave:approve:department'])"
-          :disabled="status === 2"
-        >
-          审批
-        </el-button>
-        <el-button
-          text
           v-if="scope.row.status !== '待审批'"
           type="success"
           @click="viewHandler(scope.row)"
         >
           查看
         </el-button>
-        <!-- v-if="isAuth(['ROOT', 'FILE:ARCHIVE']) && scope.row.filing" -->
-        <el-button text @click="archive(scope.row)" v-if="auth(['root', 'leave:approve:archive'])">
+        <el-button
+          text
+          @click="approveHandler(scope.row.id)"
+          type="primary"
+          v-if="
+            (auth(['root', 'leave:approve:all']) ||
+              auth(['root', 'leave:approve:department']) ||
+              (auth(['root', 'reimburse:approve:archive']) &&
+                scope.row.status === '审批中' &&
+                type === '报销申请')) &&
+            status === '待审批'
+          "
+        >
+          审批
+        </el-button>
+
+        <el-button
+          text
+          @click="archive(scope.row)"
+          v-if="
+            (auth(['root', 'leave:approve:archive']) ||
+              (auth(['root', 'reimburse:approve:archive']) &&
+                scope.row.status === '归档中' &&
+                type === '报销申请')) &&
+            status === '待审批'
+          "
+        >
           归档
         </el-button>
       </template>
     </el-table-column>
   </el-table>
-  <ArchiveDialog ref="dialogRef"></ArchiveDialog>
+  <ArchiveDialog ref="dialogRef" @searchInfo="searchInfo"></ArchiveDialog>
   <el-pagination
     @size-change="sizeChangeHandle"
     @current-change="currentChangeHandle"
@@ -215,8 +247,7 @@ import SearchForm from '../SearchForm/index.vue'
 import ArchiveDialog from '../ArchiveDialog/index.vue'
 import useApprovalStore from '@/stores/onlineoffice/approval/index.ts'
 const approvalStore = useApprovalStore()
-const { total, tableList, approvalInfo, leaveInfo, reimInfo, reimForm, leaveForm } =
-  storeToRefs(approvalStore)
+const { total, tableList, approvalInfo, leaveInfo, reimInfo } = storeToRefs(approvalStore)
 const approvalRef = ref()
 const dialogRef = ref(null)
 const status = ref('待审批')
@@ -246,6 +277,7 @@ const loadData = () => {
 loadData()
 //查询审批会议
 const queryHandler = (queryData) => {
+  dataList.tableData = []
   loadingShow.value = true
   if (queryData) {
     status.value = queryData.status
@@ -307,6 +339,10 @@ const approveHandler = (id) => {
 //归档
 const archive = (type) => {
   dialogRef.value?.show(type)
+}
+//归档后继续渲染表格数据
+const searchInfo = () => {
+  loadData()
 }
 </script>
 <style lang="less">

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import {
   approvalList,
-  approvalInfo,
+  meetingInfo,
   approvalFn,
   leaveInfo,
   reimInfo,
@@ -16,7 +16,6 @@ interface StateType {
   reimInfo: null
   leaveInfo: null
   leaveForm: null | string
-  reimForm: null | string
 }
 const useApprovalStore = defineStore('approval', {
   state: (): StateType => ({
@@ -25,8 +24,7 @@ const useApprovalStore = defineStore('approval', {
     approvalInfo: null,
     reimInfo: null,
     leaveInfo: null,
-    leaveForm: localStorage.getItem('leave') || null,
-    reimForm: localStorage.getItem('reim') || null
+    leaveForm: localStorage.getItem('leave') || null
   }),
   actions: {
     getApprovalList(data: any) {
@@ -49,17 +47,13 @@ const useApprovalStore = defineStore('approval', {
     getLeaveForm(value: any) {
       this.leaveForm = value
       let url = fnBase64ToUrl(this.leaveForm)
-      localStorage.setItem('leave', JSON.stringify(url))
+      localStorage.setItem('leave', url)
     },
-    getReimForm(value: any) {
-      this.reimForm = value
-      let url = fnBase64ToUrl(this.reimForm)
-      localStorage.setItem('reim', JSON.stringify(url))
-    },
+
     getApprovalInfo(id: string, row: any) {
       let that = this
-      if (row.type === '会议审批') {
-        approvalInfo(id, function (res: any) {
+      if (row.type === '会议申请') {
+        meetingInfo(id, function (res: any) {
           let { code, message, ...other } = res
           that.approvalInfo = other
         })

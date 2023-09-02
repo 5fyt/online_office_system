@@ -5,7 +5,6 @@
         :default-active="menuActiveName || 'Home'"
         :collapse="sidebar.isFold"
         :collapseTransition="false"
-        @select="selectHandle"
         class="site-sidebar__menu"
         background-color="#263238"
         active-text-color="#fff"
@@ -56,7 +55,23 @@
             <SvgIcon name="meeting_fill" class="icon-svg" />
             <span>在线办公</span>
           </template>
-          <el-menu-item index="Approval" @click="$router.push({ name: 'Approval' })">
+          <el-menu-item
+            index="Approval"
+            @click="$router.push({ name: 'Approval' })"
+            v-if="
+              auth([
+                'root',
+                'leave:approve:all',
+                'leave:approve:department',
+                'meeting:approve:all',
+                'meeting:approve:department',
+                'reimburse:approve:all',
+                'reimburse:approve:department',
+                'leave:approve:archive',
+                'reimburse:approve:archive'
+              ])
+            "
+          >
             <SvgIcon name="warehouse_fill" class="icon-svg" />
             <span>审批任务</span>
           </el-menu-item>
@@ -136,9 +151,7 @@ watch(
     menuActiveName.value = oldValue
   }
 )
-const selectHandle = (value, v) => {
-  console.log(value, v)
-}
+
 defineExpose({ closeAside })
 </script>
 <style lang="scss" scope>

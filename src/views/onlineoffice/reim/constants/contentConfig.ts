@@ -7,15 +7,14 @@ const contentConfig = {
       label: ''
     },
     {
+      type: 'expandCustom',
+      slotName: 'reim',
+      width: '40'
+    },
+    {
       type: 'index',
       label: '序号',
       width: '100'
-    },
-    {
-      type: 'expandCustom',
-     
-      slotName: 'reim',
-      width: '40'
     },
     {
       type: 'normal',

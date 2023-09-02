@@ -50,10 +50,19 @@ export const transWidthNum = (meetings: any) => {
 }
 export const transTime = (meetings: any) => {
   let arrTime: any = []
-  for (let i = 0; i < 7; i++) {
-    let time = dayjs(meetings[0]?.date).add(i, 'day').format('YYYY-MM-DD')
-    let arrItem = dayjs(time).format('MM/DD(ddd)')
-    arrTime.push(arrItem)
+  if (meetings) {
+    for (let i = 0; i < 7; i++) {
+      let time = dayjs(meetings).add(i, 'day').format('YYYY-MM-DD')
+      let arrItem = dayjs(time).format('MM/DD(ddd)')
+      arrTime.push(arrItem)
+    }
+  } else {
+    meetings = dayjs(new Date()).format('YYYY-MM-DD')
+    for (let i = 0; i < 7; i++) {
+      let time = dayjs(meetings).add(i, 'day').format('YYYY-MM-DD')
+      let arrItem = dayjs(time).format('MM/DD(ddd)')
+      arrTime.push(arrItem)
+    }
   }
   return arrTime
 }
@@ -89,8 +98,6 @@ export const transPdf = (title: string) => {
     let pageData = canvas.toDataURL('image/jpeg', 1.0)
     if (title === '请假单') {
       approvalStore.getLeaveForm(pageData)
-    } else {
-      approvalStore.getReimForm(pageData)
     }
     let PDF = new jsPDF(undefined, 'pt', 'a4')
     if (leftHeight < pageHeight) {

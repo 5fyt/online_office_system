@@ -30,7 +30,7 @@ import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import useApprovalStore from '@/stores/onlineoffice/approval/index.ts'
 const approvalStore = useApprovalStore()
-
+const emits = defineEmits(['searchInfo'])
 const upload = ref(null)
 const data = ref({})
 const id = ref(null)
@@ -60,6 +60,7 @@ const show = (value) => {
 const beforeUploadHandle = (rawFile) => {
   data.value['file'] = rawFile
   data.value['type'] = type.value
+  data.value['id'] = id.value
   if (rawFile.type == 'image/gif' || rawFile.type == 'image/webp') {
     ElMessage.error('不支持该图片文件格式')
     return false
@@ -99,6 +100,7 @@ const archiveHandle = () => {
     type: type.value
   }
   approvalStore.archiveImage(data)
+  emits('searchInfo')
   visible.value = false
 }
 defineExpose({ show })

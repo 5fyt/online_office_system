@@ -68,15 +68,18 @@ const meetingDetail = reactive({
 })
 const loadCalendarData = () => {
   if (props.queryInfo?.date) {
+    console.log(props.queryInfo.date)
     offlineStore.getOfflineCalendar({ ...props.queryInfo })
-    calendarDays.days = transTime(calandarMeetings.value)
+    // calendarDays.days = transTime(calandarMeetings.value)
+    calendarDays.days = transTime(props.queryInfo.date)
     meetingDetail.meetings = calandarMeetings.value
   } else {
     let data = {
       date: dayjs().format('YYYY-MM-DD')
     }
     offlineStore.getOfflineCalendar({ ...props.queryInfo, ...data })
-    calendarDays.days = transTime(calandarMeetings.value)
+    // calendarDays.days = transTime(calandarMeetings.value)
+    calendarDays.days = transTime(props.queryInfo.date)
     meetingDetail.meetings = calandarMeetings.value
     console.log('meetings',meetingDetail.meetings)
   }

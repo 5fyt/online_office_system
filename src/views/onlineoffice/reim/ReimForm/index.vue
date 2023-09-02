@@ -28,7 +28,7 @@
             <td align="center">{{ one.title }}</td>
             <td align="center">{{ one.description }}</td>
             <td>{{ one.type }}</td>
-            <td align="center">{{ one.money != '' ? one.money + '元' : '' }}</td>
+            <td align="center">{{ one.money ? one.money + '元' : '' }}</td>
           </tr>
           <tr>
             <th>报销合计</th>
@@ -42,20 +42,8 @@
             <td colspan="5">
               <div class="info-container">
                 <span class="info">借款金额：{{ reimFormInfo.debit }}元</span>
-                <span class="info"
-                  >应退金额：{{
-                    reimFormInfo.debit < reimFormInfo.total
-                      ? reimFormInfo.total - reimFormInfo.debit
-                      : reimFormInfo.debit - reimFormInfo.total
-                  }}元</span
-                >
-                <span class="info"
-                  >应补金额：{{
-                    reimFormInfo.debit < reimFormInfo.total
-                      ? reimFormInfo.total - reimFormInfo.debit
-                      : reimFormInfo.debit - reimFormInfo.total
-                  }}元</span
-                >
+                <span class="info">应退金额：{{ computeBackMoney }}元</span>
+                <span class="info">应补金额：{{ computeReturnMoney }}元</span>
               </div>
             </td>
           </tr>
@@ -78,7 +66,7 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import QRCode from 'qrcode'
 import useReimStore from '@/stores/onlineoffice/Reim/index.ts'
@@ -93,6 +81,9 @@ const showPdf = (id) => {
   visible.value = true
   reimStore.getReimInfo(id)
   reimFormInfo.value = reimForm.value
+  for (let i = 0; i < 3; i++) {
+    reimFormInfo.value.content.push({})
+  }
   getQrCode(id)
 }
 const getQrCode = (id) => {
@@ -108,6 +99,20 @@ const getPdf = () => {
   let title = '报销单'
   transPdf(title)
 }
+const computeReturnMoney = computed(() => {
+  if (reimFormInfo.value.total < reimFormInfo.value.debit) {
+    return (reimFormInfo.value.total - reimFormInfo.value.debit).toFixed(2)
+  } else {
+    return '0'
+  }
+})
+const computeBackMoney = computed(() => {
+  if (reimFormInfo.value.total > reimFormInfo.value.debit) {
+    return (reimFormInfo.value.debit - reimFormInfo.value.total).toFixed(2)
+  } else {
+    return '0'
+  }
+})
 defineExpose({ showPdf })
 </script>
 <style scope lang="less">

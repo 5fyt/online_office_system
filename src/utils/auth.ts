@@ -13,6 +13,5 @@ const auth = (permission: string[]) => {
   } else {
     return false
   }
-
 }
 export { auth }

@@ -23,44 +23,46 @@
           />
           <span class="note">请如实填写借款金额</span>
         </el-form-item>
-        <div class="project">
-          <template v-for="(item, index) in dialogForm.content">
-            <h3>【 报销项目 】</h3>
-            <i class="icon-delete">
-              <el-icon @click="deleteProject(index)"><Delete /></el-icon>
-            </i>
-            <el-form-item label="项目名称" prop="title">
-              <el-input v-model="item.title" style="width: 95%" maxlength="20" clearable />
-            </el-form-item>
-            <el-form-item label="项目类别" prop="type">
-              <el-select v-model="item.type" class="input" clearable>
-                <el-option label="办公用品" value="办公用品" />
-                <el-option label="招待费" value="招待费" />
-                <el-option label="采购费" value="采购费" />
-                <el-option label="劳务费" value="劳务费" />
-                <el-option label="培训费" value="培训费" />
-                <el-option label="维修费" value="维修费" />
-                <el-option label="办公费" value="办公费" />
-                <el-option label="其他" value="其他" />
-              </el-select>
-              <span class="note">请选择项目报销的类别</span>
-            </el-form-item>
-            <el-form-item label="备注信息">
-              <el-input
-                v-model="item.description"
-                type="textarea"
-                maxlength="50"
-                style="width: 95%"
-                resize="none"
-                show-word-limit
-                clearable
-              />
-            </el-form-item>
-            <el-form-item label="报销金额" prop="money">
-              <el-input v-model="item.money" style="width: 160px" clearable />
-              <span class="note">认真核对该项目的报销金额</span>
-            </el-form-item>
-          </template>
+        <div class="project" v-for="(item, index) in dialogForm.content">
+          <h3>【 报销项目 】</h3>
+          <el-icon
+            class="icon-delete"
+            @click="deleteProject(index)"
+            v-if="dialogForm.content.length > 1"
+            ><Delete
+          /></el-icon>
+
+          <el-form-item label="项目名称">
+            <el-input v-model="item.title" style="width: 95%" maxlength="20" clearable />
+          </el-form-item>
+          <el-form-item label="项目类别">
+            <el-select v-model="item.type" class="input" clearable>
+              <el-option label="办公用品" value="办公用品" />
+              <el-option label="招待费" value="招待费" />
+              <el-option label="采购费" value="采购费" />
+              <el-option label="劳务费" value="劳务费" />
+              <el-option label="培训费" value="培训费" />
+              <el-option label="维修费" value="维修费" />
+              <el-option label="办公费" value="办公费" />
+              <el-option label="其他" value="其他" />
+            </el-select>
+            <span class="note">请选择项目报销的类别</span>
+          </el-form-item>
+          <el-form-item label="备注信息">
+            <el-input
+              v-model="item.description"
+              type="textarea"
+              maxlength="50"
+              style="width: 95%"
+              resize="none"
+              show-word-limit
+              clearable
+            />
+          </el-form-item>
+          <el-form-item label="报销金额">
+            <el-input v-model="item.money" style="width: 160px" clearable />
+            <span class="note">认真核对该项目的报销金额</span>
+          </el-form-item>
         </div>
       </el-form>
     </el-scrollbar>
@@ -94,17 +96,10 @@ const dialogForm = reactive({
 const ruleData = reactive({
   title: [{ required: true, message: '项目名称必填', trigger: 'blur' }],
   type: [{ required: true, message: '项目类别必填', trigger: 'blur' }],
-  money: [
-    { required: true, message: '报销金额必填', trigger: 'blur' },
-    {
-      pattern: '(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)',
-      message: '金额格式错误'
-    }
-  ],
   debit: [
     { required: true, message: '借款金额必填', trigger: 'blur' },
     {
-      pattern: '(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)',
+      pattern: /^\d+(\.\d{2})?$/,
       message: '报销金额格式错误'
     }
   ]
@@ -135,8 +130,44 @@ const submit = () => {
   formRef.value?.clearValidate()
   formRef.value?.validate((isOK) => {
     if (isOK) {
-      let data = { ...dialogForm }
-      reimStore.addReim(data)
+      if (
+        dialogForm.debit.includes('.') &&
+        dialogForm.content.every((item) => item.money.includes('.'))
+      ) {
+        let data = { ...dialogForm }
+        reimStore.addReim(data)
+      } else if (
+        !dialogForm.debit.includes('.') &&
+        dialogForm.content.every((item) => item.money.includes('.'))
+      ) {
+        let debit = dialogForm.debit + '.00'
+        let data = {
+          ...dialogForm,
+          debit
+        }
+        reimStore.addReim(data)
+      } else if (
+        !dialogForm.content.every((item) => item.money.includes('.')) &&
+        dialogForm.debit.includes('.')
+      ) {
+        dialogForm.content.forEach((item) => {
+          item.money = item.money + '.00'
+        })
+        let data = {
+          ...dialogForm
+        }
+        reimStore.addReim(data)
+      } else {
+        let debit = dialogForm.debit + '.00'
+        dialogForm.content.forEach((item) => {
+          item.money = item.money + '.00'
+        })
+        let data = {
+          ...dialogForm,
+          debit
+        }
+        reimStore.addReim(data)
+      }
       clearForm()
       emits('confirm')
     }

@@ -2,14 +2,8 @@
   <div class="search">
     <el-form :inline="true" :model="searchForm" :rules="ruleData" ref="formRef">
       <template v-for="(item, index) in searchConfig.searchList" :key="index">
-        <el-form-item :prop="item.prop">
-          <template
-            v-if="
-              item.type === 'input' &&
-              (auth(['root', `${searchConfig.pageName}:select:all`]) ||
-                auth(['root', `${searchConfig.pageName}:select:department`]))
-            "
-          >
+        <el-form-item :prop="item.prop" >
+          <template v-if="item.type === 'input' && permissionShow.name">
             <el-input
               v-model="searchForm[item.prop]"
               :placeholder="item.placeholder"
@@ -26,28 +20,35 @@
               end-placeholder="结束日期"
             ></el-date-picker>
           </template>
-          <template v-if="item.type === 'selected' && item.customOption">
+          <template v-if="item.type === 'selected' && item.customOption && item.prop === 'type'">
             <el-select
               v-model="searchForm[item.prop]"
               class="input"
               :placeholder="item.placeholder"
               clearable
             >
-              <template
-                v-if="
-                  item.prop === 'department' &&
-                  !auth(['root', `${searchConfig.pageName}:select:department`])
-                "
-              >
-                <el-option
-                  v-for="one in options.departmentList"
-                  :label="one.deptName"
-                  :value="one.id"
-                />
-              </template>
-              <template v-if="item.prop === 'type'">
-                <el-option v-for="one in options.penaltyType" :label="one.name" :value="one.id" />
-              </template>
+              <el-option v-for="one in options.penaltyType" :label="one.name" :value="one.id" />
+            </el-select>
+          </template>
+          <template
+            v-if="
+              item.type === 'selected' &&
+              item.customOption &&
+              item.prop === 'department' &&
+              permissionShow.department
+            "
+          >
+            <el-select
+              v-model="searchForm[item.prop]"
+              class="input"
+              :placeholder="item.placeholder"
+              clearable
+            >
+              <el-option
+                v-for="one in options.departmentList"
+                :label="one.deptName"
+                :value="one.id"
+              />
             </el-select>
           </template>
           <template v-if="item.type === 'selected' && !item.customOption">
@@ -113,7 +114,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import dayjs from 'dayjs'
@@ -184,4 +185,16 @@ const deleteHandle = () => {
 const reportHandle = () => {
   router.push({ name: 'AmectReport' })
 }
+const permissionShow = computed(() => {
+  let obj = {}
+  if (auth(['root', 'leave:select:all'])) {
+    obj = { name: true, department: true }
+  } else if (auth(['leave:select:department'])) {
+    obj = { name: true, department: false }
+  } else {
+    obj = { name: false, department: false }
+  }
+  return obj
+})
+console.log(permissionShow)
 </script>

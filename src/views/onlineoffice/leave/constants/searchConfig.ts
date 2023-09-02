@@ -1,5 +1,5 @@
 const searchConfig = {
-  pageName:'leave',
+  pageName: 'leave',
   searchList: [
     {
       type: 'input',
@@ -28,8 +28,9 @@ const searchConfig = {
       placeholder: '状态',
       customOption: false,
       options: [
-        { label: '未缴纳', value: 1 },
-        { label: '已缴纳', value: 2 }
+        { label: '请假中', value: '请假中' },
+        { label: '不同意', value: '不同意' },
+        { label: '已同意', value: '已同意' }
       ]
     },
     {

@@ -22,7 +22,7 @@
         </el-form-item>
         <el-radio-group v-model="SearchForm.status" @change="searchHandle()">
           <el-radio-button label="待审批" />
-          <el-radio-button label="已审批" />
+          <el-radio-button label="已审批" v-if="auth(['leave:approve:department'])" />
           <el-radio-button label="已结束" />
         </el-radio-group>
       </div>
@@ -31,6 +31,7 @@
 </template>
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import { auth } from '@/utils/auth.ts'
 const emits = defineEmits(['queryHandler'])
 const searchRef = ref()
 const SearchForm = reactive({
@@ -44,7 +45,8 @@ const searchRule = reactive({
 })
 const searchHandle = () => {
   emits('queryHandler', { ...SearchForm })
-  searchRef.value?.resetFields()
+  // searchRef.value?.resetFields()
+  SearchForm.name = null
 }
 </script>
 <style lang="less">
